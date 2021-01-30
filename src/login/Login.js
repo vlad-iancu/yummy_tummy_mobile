@@ -1,6 +1,7 @@
 import React from 'react'
 import { StyleSheet, Text, View, Image, Dimensions } from 'react-native'
 import { TextInput, TouchableNativeFeedback } from 'react-native-gesture-handler'
+import axios from 'axios'
 import Background from '../../assets/login.svg'
 import EmailIcon from '../../assets/email.svg'
 import PhoneIcon from '../../assets/phone.svg'
@@ -23,12 +24,12 @@ export default function Login({ navigation }) {
 
                     <PhoneIcon width={16} height={16} marginTop={16} marginLeft={10} marginRight={5} />
 
-                    <TextInput style={styles.text} placeholder="Phone" />
+                    <TextInput style={styles.text} placeholder="Phone" selectionColor={"#00000077"} />
 
                 </View>
                 <View style={styles.textContainer}>
 
-                    <TextInput style={[styles.text, { marginLeft: 40 }]} placeholder="Password" />
+                    <TextInput style={[styles.text, { marginLeft: 40 }]} placeholder="Password" selectionColor={"#00000077"} secureTextEntry = {true} />
 
                 </View>
                 <View style={styles.buttonLarge}>
@@ -80,9 +81,9 @@ let styles = StyleSheet.create({
         height: 250,
         backgroundColor: "white",
         borderRadius: 10,
-        elevation: 5,
-        shadowColor: "lightgray",
-        shadowRadius: 3,
+    //    elevation: 5,
+    //    shadowColor: "lightgray",
+    //    shadowRadius: 3,
     },
     text: {
         flex: 1,
@@ -91,11 +92,13 @@ let styles = StyleSheet.create({
         borderStyle: "solid",
         borderRadius: 15,
         padding: 5,
-        backgroundColor: "white",
-        elevation: 3,
-        shadowColor: "lightgray",
-        shadowRadius: 1,
-        shadowOffset: { width: 0, height: 0 },
+        borderColor: "lightgray",
+        borderWidth: 1,
+        //backgroundColor: "white",
+        //elevation: 3,
+        //shadowColor: "lightgray",
+        //shadowRadius: 1,
+        //shadowOffset: { width: 0, height: 0 },
     },
     textContainer: {
         flexDirection: "row"
