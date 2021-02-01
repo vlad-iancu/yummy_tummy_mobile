@@ -12,10 +12,8 @@ import React from 'react'
 import Login from './src/login/Login'
 import Register from './src/register/Register'
 import { createStore } from 'redux'
-import initialStoreState from './src/GlobalStore'
 import rootReducer from './src/RootReducer'
 import { Provider } from 'react-redux'
-import ModalContainer from './src/alert-modal/ModalContainer'
 import ProgressBarContainer from './src/utils/ProgressBarContainer'
 const Stack = createStackNavigator()
 

@@ -1,11 +1,11 @@
 import React from 'react'
-import { StyleSheet, Text, View, Image, Dimensions } from 'react-native'
-import { TextInput, TouchableNativeFeedback } from 'react-native-gesture-handler'
+import { StyleSheet, Text, View, TextInput, TouchableNativeFeedback } from 'react-native'
 import axios from 'axios'
 import Background from '../../assets/login.svg'
 import EmailIcon from '../../assets/email.svg'
 import PhoneIcon from '../../assets/phone.svg'
-export default function Login({ navigation }) {
+import RippleButton from '../utils/RippleButton'
+export default function Login({ navigation }: any) {
     return (
         <View style={styles.container}>
 
@@ -15,36 +15,28 @@ export default function Login({ navigation }) {
 
                 <View style={styles.textContainer}>
 
-                    <EmailIcon width={16} height={16} marginTop={16} marginLeft={10} marginRight={5} />
+                    <EmailIcon width={16} height={16} style={styles.icon} />
 
                     <TextInput style={styles.text} placeholder="Email" selectionColor={"#00000077"} />
 
                 </View>
                 <View style={styles.textContainer}>
 
-                    <PhoneIcon width={16} height={16} marginTop={16} marginLeft={10} marginRight={5} />
+                    <PhoneIcon width={16} height={16} style={styles.icon} />
 
                     <TextInput style={styles.text} placeholder="Phone" selectionColor={"#00000077"} />
 
                 </View>
                 <View style={styles.textContainer}>
 
-                    <TextInput style={[styles.text, { marginLeft: 40 }]} placeholder="Password" selectionColor={"#00000077"} secureTextEntry = {true} />
+                    <TextInput style={[styles.text, { marginLeft: 40 }]} placeholder="Password" selectionColor={"#00000077"} secureTextEntry={true} />
 
                 </View>
                 <View style={styles.buttonLarge}>
 
-                    <TouchableNativeFeedback
-                        background={TouchableNativeFeedback.Ripple("#FFFFFF", false)}
-                        useForeground={true}
-                        onPress={(e) => console.log("Login button pressed")}>
-                        <View style={styles.touchable}>
-
-                            <Text style={styles.buttonText}>Login</Text>
-
-                        </View>
-
-                    </TouchableNativeFeedback>
+                    <RippleButton duration={750} rippleColor="white" style={styles.touchable} >
+                        <Text style={styles.buttonText}>Login</Text>
+                    </RippleButton>
 
                 </View>
 
@@ -81,9 +73,9 @@ let styles = StyleSheet.create({
         height: 250,
         backgroundColor: "white",
         borderRadius: 10,
-    //    elevation: 5,
-    //    shadowColor: "lightgray",
-    //    shadowRadius: 3,
+        //    elevation: 5,
+        //    shadowColor: "lightgray",
+        //    shadowRadius: 3,
     },
     text: {
         flex: 1,
@@ -104,7 +96,9 @@ let styles = StyleSheet.create({
         flexDirection: "row"
     },
     icon: {
-        margin: 10
+        marginTop: 16,
+        marginLeft: 10,
+        marginRight: 5
     },
     buttonLarge: {
         backgroundColor: "royalblue",

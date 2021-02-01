@@ -2,8 +2,8 @@ import React from 'react'
 import { StyleSheet, View } from 'react-native'
 import { useSelector } from 'react-redux'
 import * as Progress from 'react-native-progress'
-export default function ProgressBarContainer(props) {
-    let { loading } = useSelector(state => state.loading)
+export default function ProgressBarContainer(props: any) {
+    let { loading } = useSelector((state: any) => state.loading)
     console.log("Loading: " + loading)
     return (
         <View style={styles.container}>

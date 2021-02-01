@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { StyleSheet, Text, View, Image, Dimensions, Alert } from 'react-native'
-import { TextInput, TouchableNativeFeedback } from 'react-native-gesture-handler';
+import { StyleSheet, Text, View, Image, Dimensions, Alert, TouchableNativeFeedback, TextInput } from 'react-native'
+//import { TextInput, TouchableNativeFeedback } from 'react-native-gesture-handler';
 import Background from '../../assets/login.svg';
 import axios from 'axios'
 import EmailIcon from '../../assets/email.svg'
@@ -8,8 +8,13 @@ import PhoneIcon from '../../assets/phone.svg'
 import UserIcon from '../../assets/user.svg'
 import { BASE_URL as baseURL, DISPLAY_MODAL, LOADING } from '../Constants'
 import { useDispatch, useSelector } from 'react-redux';
-export default function Register({ navigation }) {
-
+import { NavigationScreenProp } from 'react-navigation'
+import { StackNavigationProp } from '@react-navigation/stack'
+import RippleButton from '../utils/RippleButton';
+type RegisterProps = {
+    navigation: StackNavigationProp<any, any>
+}
+export default function Register({ navigation }: RegisterProps) {
     let [email, setEmail] = useState("")
     let [name, setName] = useState("")
     let [phone, setPhone] = useState("")
@@ -27,12 +32,12 @@ export default function Register({ navigation }) {
                 if (result.status == 200) text = "Registration successful"
                 else text = result.data.message
                 console.log(result.data)
-                Alert.alert(null, text)
+                Alert.alert("", text)
             })
             .catch(err => {
                 console.log("Got error from server: " + err)
                 console.log(err.response.data)
-                Alert.alert(null, err.response.data.message)
+                Alert.alert("", err.response.data.message)
             })
             .finally(() => {
                 console.log("Resetting loading to false")
@@ -50,7 +55,7 @@ export default function Register({ navigation }) {
 
                 <View style={styles.textContainer}>
 
-                    <UserIcon width={16} height={16} marginTop={16} marginLeft={10} marginRight={5} />
+                    <UserIcon width={16} height={16} style={styles.icon}/>
 
                     <TextInput style={styles.text} placeholder="Name" selectionColor={"#00000077"} value={name} onChangeText={setName} />
 
@@ -58,14 +63,14 @@ export default function Register({ navigation }) {
 
                 <View style={styles.textContainer}>
 
-                    <EmailIcon width={16} height={16} marginTop={16} marginLeft={10} marginRight={5} />
+                    <EmailIcon width={16} height={16} style={styles.icon} />
 
                     <TextInput style={styles.text} placeholder="Email" selectionColor={"#00000077"} value={email} onChangeText={setEmail} />
 
                 </View>
                 <View style={styles.textContainer}>
 
-                    <PhoneIcon width={16} height={16} marginTop={16} marginLeft={10} marginRight={5} />
+                    <PhoneIcon width={16} height={16} style={styles.icon} />
 
                     <TextInput style={styles.text} placeholder="Phone" selectionColor={"#00000077"} value={phone} onChangeText={setPhone} />
 
@@ -78,7 +83,7 @@ export default function Register({ navigation }) {
                 </View>
                 <View style={styles.buttonLarge}>
 
-                    <TouchableNativeFeedback
+                    {/* <TouchableNativeFeedback
                         background={TouchableNativeFeedback.Ripple("#FFFFFF", false,)}
                         useForeground={true}
                         onPress={register}>
@@ -88,7 +93,10 @@ export default function Register({ navigation }) {
 
                         </View>
 
-                    </TouchableNativeFeedback>
+                    </TouchableNativeFeedback> */}
+                    <RippleButton duration = {750} rippleColor="white" style={styles.touchable} >
+                        <Text style={styles.buttonText}>Register</Text>
+                    </RippleButton>
 
                 </View>
 
@@ -147,8 +155,11 @@ let styles = StyleSheet.create({
     textContainer: {
         flexDirection: "row"
     },
+    /* marginTop={16} */ /* marginLeft={10} */ /* marginRight={5} */
     icon: {
-        margin: 10
+        marginTop: 16,
+        marginLeft: 10,
+        marginRight: 5
     },
     buttonLarge: {
         backgroundColor: "royalblue",
