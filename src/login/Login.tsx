@@ -1,11 +1,11 @@
 import React from 'react'
-import { StyleSheet, Text, View, Image, Dimensions } from 'react-native'
-import { TextInput, TouchableNativeFeedback } from 'react-native-gesture-handler'
+import { StyleSheet, Text, View, TextInput, TouchableNativeFeedback } from 'react-native'
+import axios from 'axios'
 import Background from '../../assets/login.svg'
 import EmailIcon from '../../assets/email.svg'
 import PhoneIcon from '../../assets/phone.svg'
-import UserIcon from '../../assets/user.svg'
-export default function Register({ navigation }) {
+import RippleButton from '../utils/RippleButton'
+export default function Login({ navigation }: any) {
     return (
         <View style={styles.container}>
 
@@ -15,52 +15,36 @@ export default function Register({ navigation }) {
 
                 <View style={styles.textContainer}>
 
-                    <UserIcon width={16} height={16} marginTop={16} marginLeft={10} marginRight={5} />
-
-                    <TextInput style={styles.text} placeholder="Name" selectionColor={"#00000077"} />
-
-                </View>
-
-                <View style={styles.textContainer}>
-
-                    <EmailIcon width={16} height={16} marginTop={16} marginLeft={10} marginRight={5} />
+                    <EmailIcon width={16} height={16} style={styles.icon} />
 
                     <TextInput style={styles.text} placeholder="Email" selectionColor={"#00000077"} />
 
                 </View>
                 <View style={styles.textContainer}>
 
-                    <PhoneIcon width={16} height={16} marginTop={16} marginLeft={10} marginRight={5} />
+                    <PhoneIcon width={16} height={16} style={styles.icon} />
 
-                    <TextInput style={styles.text} placeholder="Phone" />
+                    <TextInput style={styles.text} placeholder="Phone" selectionColor={"#00000077"} />
 
                 </View>
                 <View style={styles.textContainer}>
 
-                    <TextInput style={[styles.text, { marginLeft: 40 }]} placeholder="Password" />
+                    <TextInput style={[styles.text, { marginLeft: 40 }]} placeholder="Password" selectionColor={"#00000077"} secureTextEntry={true} />
 
                 </View>
                 <View style={styles.buttonLarge}>
 
-                    <TouchableNativeFeedback
-                        background={TouchableNativeFeedback.Ripple("#FFFFFF", false,)}
-                        useForeground={true}
-                        onPress={(e) => console.log("Login button pressed")}>
-                        <View style={styles.touchable}>
-
-                            <Text style={styles.buttonText}>Register</Text>
-
-                        </View>
-
-                    </TouchableNativeFeedback>
+                    <RippleButton duration={750} rippleColor="white" style={styles.touchable} >
+                        <Text style={styles.buttonText}>Login</Text>
+                    </RippleButton>
 
                 </View>
 
                 <View style={{ marginLeft: 10, marginBottom: 10, flexDirection: "row" }}>
 
-                    <Text>Already have an account?</Text>
+                    <Text>Don't have an account?</Text>
 
-                    <Text style={styles.link} onPress={() => navigation.navigate("Login")}>Sign In</Text>
+                    <Text style={styles.link} onPress={() => navigation.navigate("Register")} >Sign up</Text>
 
                 </View>
 
@@ -86,12 +70,12 @@ let styles = StyleSheet.create({
     },
     cardContainer: {
         width: 350,
-        height: 350,
+        height: 250,
         backgroundColor: "white",
         borderRadius: 10,
-        elevation: 5,
-        shadowColor: "lightgray",
-        shadowRadius: 3,
+        //    elevation: 5,
+        //    shadowColor: "lightgray",
+        //    shadowRadius: 3,
     },
     text: {
         flex: 1,
@@ -100,17 +84,21 @@ let styles = StyleSheet.create({
         borderStyle: "solid",
         borderRadius: 15,
         padding: 5,
-        backgroundColor: "white",
-        elevation: 3,
-        shadowColor: "lightgray",
-        shadowRadius: 1,
-        shadowOffset: { width: 0, height: 0 },
+        borderColor: "lightgray",
+        borderWidth: 1,
+        //backgroundColor: "white",
+        //elevation: 3,
+        //shadowColor: "lightgray",
+        //shadowRadius: 1,
+        //shadowOffset: { width: 0, height: 0 },
     },
     textContainer: {
         flexDirection: "row"
     },
     icon: {
-        margin: 10
+        marginTop: 16,
+        marginLeft: 10,
+        marginRight: 5
     },
     buttonLarge: {
         backgroundColor: "royalblue",
@@ -132,7 +120,7 @@ let styles = StyleSheet.create({
     },
     link: {
         color: "royalblue",
+        fontWeight: "bold",
         marginLeft: 5,
-        fontWeight: "bold"
     }
 })

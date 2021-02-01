@@ -11,20 +11,29 @@ import { createStackNavigator, TransitionPresets, CardStyleInterpolators } from 
 import React from 'react'
 import Login from './src/login/Login'
 import Register from './src/register/Register'
-import { Easing } from "react-native";
+import { createStore } from 'redux'
+import rootReducer from './src/RootReducer'
+import { Provider } from 'react-redux'
+import ProgressBarContainer from './src/utils/ProgressBarContainer'
 const Stack = createStackNavigator()
+
+const store = createStore(rootReducer)
 
 export default function App(props) {
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Register" screenOptions={{
-        gestureEnabled: true,
-        gestureDirection: "horizontal",
-        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-      }}>
-        <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
-        <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <Provider store={store}>
+        <ProgressBarContainer>
+          <NavigationContainer>
+            <Stack.Navigator initialRouteName="Register" screenOptions={{
+              gestureEnabled: true,
+              gestureDirection: "horizontal",
+              cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+            }}>
+              <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+              <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </ProgressBarContainer>
+    </Provider>
   )
 }
