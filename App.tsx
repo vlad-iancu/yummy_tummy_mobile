@@ -8,20 +8,28 @@
 import 'react-native-gesture-handler'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator, TransitionPresets, CardStyleInterpolators } from '@react-navigation/stack'
-import React from 'react'
+import React, { useState } from 'react'
 import Login from './src/login/Login'
 import Register from './src/register/Register'
 import { createStore } from 'redux'
 import rootReducer from './src/RootReducer'
 import { Provider } from 'react-redux'
 import ProgressBarContainer from './src/utils/ProgressBarContainer'
+import axios from 'axios'
+import { BASE_URL } from './src/Constants'
+import loading from './src/utils/LoadingReducer'
+
+axios.defaults.baseURL = BASE_URL
+
 const Stack = createStackNavigator()
 
 const store = createStore(rootReducer)
+const ProgressBarContext = React.createContext({ loading: false, setLoading: (loading: boolean) => { } })
 
-export default function App(props) {
+export default function App(props: any) {
+  let [loading, setLoading] = useState(false)
   return (
-    <Provider store={store}>
+      <ProgressBarContext.Provider value={{ loading, setLoading }}>
         <ProgressBarContainer>
           <NavigationContainer>
             <Stack.Navigator initialRouteName="Register" screenOptions={{
@@ -33,7 +41,10 @@ export default function App(props) {
               <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
             </Stack.Navigator>
           </NavigationContainer>
+
         </ProgressBarContainer>
-    </Provider>
+      </ProgressBarContext.Provider>
   )
 }
+
+export { ProgressBarContext }

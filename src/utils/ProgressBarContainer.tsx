@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { useSelector } from 'react-redux'
 import * as Progress from 'react-native-progress'
+import { ProgressBarContext } from '../../App'
 export default function ProgressBarContainer(props: any) {
-    let { loading } = useSelector((state: any) => state.loading)
+    let { loading } = useContext(ProgressBarContext)
     console.log("Loading: " + loading)
     return (
         <View style={styles.container}>
@@ -31,8 +32,5 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: "rgba(200, 200, 200, 0.5)"
-    },
-    progressBar: {
-
     },
 })

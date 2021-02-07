@@ -1,58 +1,85 @@
-import React from 'react'
-import { StyleSheet, Text, View, TextInput, TouchableNativeFeedback } from 'react-native'
+import React, { useContext, useState } from 'react'
+import { StyleSheet, Text, View, TextInput, TouchableNativeFeedback, Alert } from 'react-native'
 import axios from 'axios'
 import Background from '../../assets/login.svg'
 import EmailIcon from '../../assets/email.svg'
 import PhoneIcon from '../../assets/phone.svg'
 import RippleButton from '../utils/RippleButton'
-export default function Login({ navigation }: any) {
+import { StackNavigationProp } from '@react-navigation/stack'
+import { ProgressBarContext } from '../../App'
+interface LoginProps {
+    navigation: StackNavigationProp<any, any>
+}
+export default function Login({ navigation }: LoginProps) {
+    let [email, setEmail] = useState("")
+    let [phone, setPhone] = useState("")
+    let [password, setPassword] = useState("")
+    let progressBarContext = useContext(ProgressBarContext)
+    
+    const login = () => {
+        progressBarContext.setLoading(true)
+        axios.post("/login", { email, phone, password })
+            .then(result => {
+                if (result.status == 200) {
+                    Alert.alert("", "Login successful")
+                }
+                console.log(result.data.token)
+            })
+            .catch(err => {
+                Alert.alert("", err.response.data.message)
+            })
+            .finally(() => {
+                progressBarContext.setLoading(false)
+            })
+
+    }
     return (
         <View style={styles.container}>
-
-            <Background style={styles.background} />
-
-            <View style={styles.cardContainer}>
-
-                <View style={styles.textContainer}>
-
+            <Background
+                style={styles.background} />
+            <View
+                style={styles.cardContainer}>
+                <View
+                    style={styles.textContainer}>
                     <EmailIcon width={16} height={16} style={styles.icon} />
-
-                    <TextInput style={styles.text} placeholder="Email" selectionColor={"#00000077"} />
-
+                    <TextInput
+                        style={styles.text}
+                        placeholder="Email"
+                        selectionColor={"#00000077"}
+                        onChangeText={setEmail} />
                 </View>
                 <View style={styles.textContainer}>
-
                     <PhoneIcon width={16} height={16} style={styles.icon} />
-
-                    <TextInput style={styles.text} placeholder="Phone" selectionColor={"#00000077"} />
-
+                    <TextInput
+                        style={styles.text}
+                        placeholder="Phone"
+                        selectionColor={"#00000077"}
+                        onChangeText={setPhone} />
                 </View>
                 <View style={styles.textContainer}>
-
-                    <TextInput style={[styles.text, { marginLeft: 40 }]} placeholder="Password" selectionColor={"#00000077"} secureTextEntry={true} />
-
+                    <TextInput
+                        style={[styles.text, { marginLeft: 40 }]}
+                        placeholder="Password"
+                        selectionColor={"#00000077"}
+                        secureTextEntry={true}
+                        onChangeText={setPassword} />
                 </View>
                 <View style={styles.buttonLarge}>
-
-                    <RippleButton duration={750} rippleColor="white" style={styles.touchable} >
+                    <RippleButton
+                        duration={750}
+                        rippleColor="white"
+                        style={styles.touchable}
+                        onPress={login}>
                         <Text style={styles.buttonText}>Login</Text>
                     </RippleButton>
-
                 </View>
-
-                <View style={{ marginLeft: 10, marginBottom: 10, flexDirection: "row" }}>
-
+                <View
+                    style={{ marginLeft: 10, marginBottom: 10, flexDirection: "row" }}>
                     <Text>Don't have an account?</Text>
-
                     <Text style={styles.link} onPress={() => navigation.navigate("Register")} >Sign up</Text>
-
                 </View>
-
             </View>
-
         </View>
-
-
     )
 }
 

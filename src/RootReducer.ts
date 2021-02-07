@@ -1,6 +1,5 @@
 import { combineReducers } from 'redux'
-import loading from './utils/LoadingReducer'
 
-const rootReducer = combineReducers({loading: loading})
+const rootReducer = combineReducers({loading: (state, action) => {}}) 
 
 export default rootReducer

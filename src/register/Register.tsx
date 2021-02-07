@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { StyleSheet, Text, View, Image, Dimensions, Alert, TouchableNativeFeedback, TextInput } from 'react-native'
 //import { TextInput, TouchableNativeFeedback } from 'react-native-gesture-handler';
 import Background from '../../assets/login.svg';
@@ -7,11 +7,11 @@ import EmailIcon from '../../assets/email.svg'
 import PhoneIcon from '../../assets/phone.svg'
 import UserIcon from '../../assets/user.svg'
 import { BASE_URL as baseURL, DISPLAY_MODAL, LOADING } from '../Constants'
-import { useDispatch, useSelector } from 'react-redux';
-import { NavigationScreenProp } from 'react-navigation'
+//import { useDispatch, useSelector } from 'react-redux';
 import { StackNavigationProp } from '@react-navigation/stack'
 import RippleButton from '../utils/RippleButton';
-type RegisterProps = {
+import { ProgressBarContext } from '../../App';
+interface RegisterProps {
     navigation: StackNavigationProp<any, any>
 }
 export default function Register({ navigation }: RegisterProps) {
@@ -19,33 +19,24 @@ export default function Register({ navigation }: RegisterProps) {
     let [name, setName] = useState("")
     let [phone, setPhone] = useState("")
     let [password, setPassword] = useState("")
+    let progressBarContext = useContext(ProgressBarContext)
     let register = () => {
-        console.log("Entered register")
-        dispatch({ type: LOADING, payload: { loading: true } })
-        console.log("Dispatched loading state")
-
-        axios.post(`${baseURL}/register`, { email, name, phone, password } )
+        progressBarContext.setLoading(true)
+        axios.post(`/register`, { email, name, phone, password })
             .then(result => {
-                console.log("Got result from server")
                 let text = ""
-                console.log(result.status)
                 if (result.status == 200) text = "Registration successful"
                 else text = result.data.message
-                console.log(result.data)
                 Alert.alert("", text)
             })
             .catch(err => {
-                console.log("Got error from server: " + err)
-                console.log(err.response.data)
                 Alert.alert("", err.response.data.message)
             })
             .finally(() => {
-                console.log("Resetting loading to false")
-                dispatch({ type: LOADING, payload: { loading: false } })
+                progressBarContext.setLoading(false)
             })
     }
 
-    let dispatch = useDispatch();
     return (
         <View style={styles.container}>
 
@@ -55,7 +46,7 @@ export default function Register({ navigation }: RegisterProps) {
 
                 <View style={styles.textContainer}>
 
-                    <UserIcon width={16} height={16} style={styles.icon}/>
+                    <UserIcon width={16} height={16} style={styles.icon} />
 
                     <TextInput style={styles.text} placeholder="Name" selectionColor={"#00000077"} value={name} onChangeText={setName} />
 
@@ -83,19 +74,10 @@ export default function Register({ navigation }: RegisterProps) {
                 </View>
                 <View style={styles.buttonLarge}>
 
-                    {/* <TouchableNativeFeedback
-                        background={TouchableNativeFeedback.Ripple("#FFFFFF", false,)}
-                        useForeground={true}
-                        onPress={register}>
-                        <View style={styles.touchable}>
+                    <RippleButton duration={750} rippleColor="white" style={styles.touchable} onPress={register} >
 
-                            <Text style={styles.buttonText}>Register</Text>
-
-                        </View>
-
-                    </TouchableNativeFeedback> */}
-                    <RippleButton duration = {750} rippleColor="white" style={styles.touchable} >
                         <Text style={styles.buttonText}>Register</Text>
+
                     </RippleButton>
 
                 </View>
