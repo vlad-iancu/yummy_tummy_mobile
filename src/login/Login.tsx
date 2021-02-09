@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import { StyleSheet, Text, View, TextInput, TouchableNativeFeedback, Alert } from 'react-native'
+import { StyleSheet, Text, View, TextInput, TouchableNativeFeedback, Alert, Button } from 'react-native'
 import axios from 'axios'
 import Background from '../../assets/login.svg'
 import EmailIcon from '../../assets/email.svg'
@@ -7,9 +7,12 @@ import PhoneIcon from '../../assets/phone.svg'
 import RippleButton from '../utils/RippleButton'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { ProgressBarContext } from '../../App'
+import EncryptedStorage from 'react-native-encrypted-storage'
+
 interface LoginProps {
     navigation: StackNavigationProp<any, any>
 }
+
 export default function Login({ navigation }: LoginProps) {
     let [email, setEmail] = useState("")
     let [phone, setPhone] = useState("")
@@ -23,7 +26,7 @@ export default function Login({ navigation }: LoginProps) {
                 if (result.status == 200) {
                     Alert.alert("", "Login successful")
                 }
-                console.log(result.data.token)
+                EncryptedStorage.setItem("authToken", result.data.token)
             })
             .catch(err => {
                 Alert.alert("", err.response.data.message)
