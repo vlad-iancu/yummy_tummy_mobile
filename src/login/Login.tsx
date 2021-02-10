@@ -8,6 +8,7 @@ import RippleButton from '../utils/RippleButton'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { ProgressBarContext } from '../../App'
 import EncryptedStorage from 'react-native-encrypted-storage'
+import { CommonActions, StackActions } from '@react-navigation/native'
 
 interface LoginProps {
     navigation: StackNavigationProp<any, any>
@@ -18,15 +19,31 @@ export default function Login({ navigation }: LoginProps) {
     let [phone, setPhone] = useState("")
     let [password, setPassword] = useState("")
     let progressBarContext = useContext(ProgressBarContext)
-    
     const login = () => {
         progressBarContext.setLoading(true)
         axios.post("/login", { email, phone, password })
             .then(result => {
                 if (result.status == 200) {
-                    Alert.alert("", "Login successful")
+                    //Alert.alert("", "Login successful")
                 }
                 EncryptedStorage.setItem("authToken", result.data.token)
+                .then(() => {
+                    navigation.reset({
+                        index: 0,
+                        routes: [
+                            {name: "Main"}
+                        ]
+                    })
+                    /* navigation.dispatch(
+                        CommonActions.reset({
+                            index: 0,
+                            routes: [
+                                {name: "Home"}
+                            ]
+                        })
+                    ) */
+                    navigation.navigate("Main")
+                })
             })
             .catch(err => {
                 Alert.alert("", err.response.data.message)

@@ -17,7 +17,8 @@ import { Provider } from 'react-redux'
 import ProgressBarContainer from './src/utils/ProgressBarContainer'
 import axios from 'axios'
 import { BASE_URL } from './src/Constants'
-import loading from './src/utils/LoadingReducer'
+import Home from './src/home/Home'
+import Main from './src/Main'
 
 axios.defaults.baseURL = BASE_URL
 
@@ -32,16 +33,16 @@ export default function App(props: any) {
       <ProgressBarContext.Provider value={{ loading, setLoading }}>
         <ProgressBarContainer>
           <NavigationContainer>
-            <Stack.Navigator initialRouteName="Register" screenOptions={{
+            <Stack.Navigator initialRouteName="Login" screenOptions={{
               gestureEnabled: true,
               gestureDirection: "horizontal",
               cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
             }}>
               <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
               <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
+              <Stack.Screen name="Main" component={Main} />
             </Stack.Navigator>
           </NavigationContainer>
-
         </ProgressBarContainer>
       </ProgressBarContext.Provider>
   )

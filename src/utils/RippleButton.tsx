@@ -15,7 +15,6 @@ export default function RippleButton({ duration, rippleColor, children, onPress 
     let [radius, setRadius] = useState(0)
 
     const scaleUp = () => {
-        console.log("Scaling up")
         Animated.timing(scaleAnim, {
             toValue: 1,
             duration: duration,
@@ -33,17 +32,12 @@ export default function RippleButton({ duration, rippleColor, children, onPress 
             x: e.nativeEvent.locationX,
             y: e.nativeEvent.locationY
         })
-        console.log({
-            x: e.nativeEvent.locationX,
-            y: e.nativeEvent.locationY
-        })
         scaleAnim.setValue(0)
         opacityAnim.setValue(1)
 
         scaleUp()
 
     }
-    console.log(children)
 
     return (
         <View style={{ width: "100%", height: "100%", }}>
@@ -86,9 +80,6 @@ const styles = StyleSheet.create({
     button: {
         width: "100%",
         height: "100%",
-        /* position: "absolute",
-        left: 0,
-        top: 0, */
     },
     buttonWrapper: {
         overflow: "hidden",

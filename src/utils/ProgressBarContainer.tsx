@@ -5,7 +5,6 @@ import * as Progress from 'react-native-progress'
 import { ProgressBarContext } from '../../App'
 export default function ProgressBarContainer(props: any) {
     let { loading } = useContext(ProgressBarContext)
-    console.log("Loading: " + loading)
     return (
         <View style={styles.container}>
             <View style={styles.container}>
