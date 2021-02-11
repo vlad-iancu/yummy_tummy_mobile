@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux'
+import restaurantsReducer from './home/restaurantsReducer'
 
-const rootReducer = combineReducers({loading: (state = {loading: false}, action) => state}) 
+const rootReducer = combineReducers({restaurants: restaurantsReducer}) 
 
 export default rootReducer

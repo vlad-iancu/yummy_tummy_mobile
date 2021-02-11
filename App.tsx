@@ -40,7 +40,7 @@ export default function App(props: any) {
             }}>
               <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
               <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
-              <Stack.Screen name="Main" component={Main} />
+              <Stack.Screen name="Main" component={Main} options={{headerShown: false}} />
             </Stack.Navigator>
           </NavigationContainer>
         </ProgressBarContainer>

@@ -1,6 +1,6 @@
-interface Action {
+interface Action<T> {
     type: string,
-    payload: any
+    payload: T
 }
 
 export type { Action }
