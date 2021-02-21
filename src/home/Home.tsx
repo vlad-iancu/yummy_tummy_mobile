@@ -1,30 +1,37 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { StackNavigationProp } from '@react-navigation/stack';
-import EncryptedStorage from 'react-native-encrypted-storage'
-import { Alert, Button, FlatList, ListRenderItemInfo } from 'react-native';
-import { Text } from 'react-native';
+import React, { useContext, useEffect } from 'react'
+import { Alert, FlatList, Text } from 'react-native';
 import { ProgressBarContext } from '../../App';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
-import { useNavigation } from '@react-navigation/native';
 import useRestaurants from './useRestaurants';
+import { useDispatch } from 'react-redux';
+import { SET_RESTAURANTS } from '../Constants';
 
 interface HomeProps {
     navigation: DrawerNavigationProp<any, any>
 }
 
-export default function Home({ navigation }: HomeProps) {
+export default function Home({ }: HomeProps) {
     let [restaurants, error, loading] = useRestaurants()
     let progressBarContext = useContext(ProgressBarContext)
+    let dispatch = useDispatch()
     useEffect(() => {
         progressBarContext.setLoading(loading)
-    },[loading])
-
+    }, [loading])
+    useEffect(() => {
+        if (restaurants.length) {
+            dispatch({ type: SET_RESTAURANTS, payload: { restaurants } })
+        }
+    }, [restaurants])
+    useEffect(() => {
+        if (error)
+            Alert.alert("", `We have encountered an error:${error}`)
+    }, [error])
     return (
-        <FlatList 
+        <FlatList
             data={restaurants}
-            renderItem={({item: {name}}) => {
+            renderItem={({ item: { name } }) => {
                 return <Text>{name}</Text>
-            } }
-            keyExtractor = {(restaurant) => restaurant.id.toString()}/>
+            }}
+            keyExtractor={(restaurant) => restaurant.id.toString()} />
     )
 }

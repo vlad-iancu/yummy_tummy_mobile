@@ -1,13 +1,26 @@
 import React, { useState, useRef, Children } from 'react'
 import { StyleSheet, TouchableWithoutFeedback, View, Animated, GestureResponderEvent, StyleProp, ViewStyle } from 'react-native'
 interface RippleButtonProps {
-    duration: number,
-    rippleColor: string,
+    duration?: number,
+    rippleColor?: string,
     children: React.ReactNode,
+    disabled?: boolean,
+    visible?: boolean,
     onPress?: (e: GestureResponderEvent) => void,
+    width?: number | string,
+    height?: number | string,
+    outerStyle?: StyleProp<ViewStyle>
     style?: StyleProp<ViewStyle>
 }
-export default function RippleButton({ duration, rippleColor, children, onPress = () => { }, style }: RippleButtonProps) {
+export default function RippleButton({
+    visible = true,
+    disabled = false,
+    duration = 300,
+    rippleColor = "#DDDDDD",
+    children, 
+    onPress = () => { },
+    outerStyle,
+    style }: RippleButtonProps) {
 
     let scaleAnim = useRef(new Animated.Value(0)).current
     let opacityAnim = useRef(new Animated.Value(1)).current
@@ -38,12 +51,14 @@ export default function RippleButton({ duration, rippleColor, children, onPress 
         scaleUp()
 
     }
-
+    if(!visible) return <View></View>
     return (
-        <View style={{ width: "100%", height: "100%", }}>
+         <View style={[outerStyle, { opacity: visible ? (disabled ? 0.5 : 1) : 0 }]}>
             <TouchableWithoutFeedback onPress={(e) => {
-                onScale(e)
-                onPress(e)
+                if (!disabled) {
+                    onScale(e)
+                    onPress(e)
+                }
             }} >
                 <View style={[styles.buttonWrapper, style]} onLayout={({ nativeEvent: { layout: { width, height } } }) => { setRadius(Math.hypot(width, height)) }} >
                     <View pointerEvents="none">
@@ -83,8 +98,8 @@ const styles = StyleSheet.create({
     },
     buttonWrapper: {
         overflow: "hidden",
-        width: "100%",
-        height: "100%"
+        /* width: "100%",
+        height: "100%" */
     },
     ripple: {
         position: "absolute",

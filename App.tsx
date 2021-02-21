@@ -17,7 +17,6 @@ import { Provider } from 'react-redux'
 import ProgressBarContainer from './src/utils/ProgressBarContainer'
 import axios from 'axios'
 import { BASE_URL } from './src/Constants'
-import Home from './src/home/Home'
 import Main from './src/Main'
 
 axios.defaults.baseURL = BASE_URL
@@ -30,6 +29,7 @@ const ProgressBarContext = React.createContext({ loading: false, setLoading: (lo
 export default function App(props: any) {
   let [loading, setLoading] = useState(false)
   return (
+    <Provider store={store}>
       <ProgressBarContext.Provider value={{ loading, setLoading }}>
         <ProgressBarContainer>
           <NavigationContainer>
@@ -40,11 +40,12 @@ export default function App(props: any) {
             }}>
               <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
               <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
-              <Stack.Screen name="Main" component={Main} options={{headerShown: false}} />
+              <Stack.Screen name="Main" component={Main} options={{ headerShown: false }} />
             </Stack.Navigator>
           </NavigationContainer>
         </ProgressBarContainer>
       </ProgressBarContext.Provider>
+    </Provider>
   )
 }
 
