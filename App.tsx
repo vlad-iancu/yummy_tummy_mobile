@@ -11,9 +11,10 @@ import { createStackNavigator, TransitionPresets, CardStyleInterpolators } from 
 import React, { useState } from 'react'
 import Login from './src/login/Login'
 import Register from './src/register/Register'
-import { createStore } from 'redux'
+import { applyMiddleware, createStore } from 'redux'
 import rootReducer from './src/RootReducer'
 import { Provider } from 'react-redux'
+import thunkMiddleware from 'redux-thunk'
 import ProgressBarContainer from './src/utils/ProgressBarContainer'
 import axios from 'axios'
 import { BASE_URL } from './src/Constants'
@@ -23,7 +24,9 @@ axios.defaults.baseURL = BASE_URL
 
 const Stack = createStackNavigator()
 
-const store = createStore(rootReducer)
+const enhancer = applyMiddleware(thunkMiddleware)
+const store = createStore(rootReducer, enhancer)
+
 const ProgressBarContext = React.createContext({ loading: false, setLoading: (loading: boolean) => { } })
 
 export default function App(props: any) {

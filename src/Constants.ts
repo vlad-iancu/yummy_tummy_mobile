@@ -1,10 +1,7 @@
-const BASE_URL = "https://vladiancusolutions.com";
+export const BASE_URL = "https://vladiancusolutions.com";
 
-const DISPLAY_MODAL = "display_modal"
-const ADD_RESTAURANTS = "add_restaurants"
-const SET_RESTAURANTS = "set_restaurants"
+export const ADD_RESTAURANTS = "restaurants/add_restaurants"
+export const SET_RESTAURANTS = "restaurants/set_restaurants"
 
-export { BASE_URL }
-export { DISPLAY_MODAL }
-export { ADD_RESTAURANTS }
-export { SET_RESTAURANTS }
+export const PROFILE_UPDATE = "profile/update_profile"
+export const PROFILE_ERROR = "profile/error"

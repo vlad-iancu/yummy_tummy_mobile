@@ -1,0 +1,70 @@
+import axios from 'axios'
+import { ImagePickerResponse } from 'react-native-image-picker'
+import { ProgressBarContext } from '../../App'
+import { PROFILE_UPDATE } from '../Constants'
+export interface Profile {
+    name?: string,
+    email?: string,
+    phone?: string,
+    photoUrl?: string,
+    error?: any
+}
+interface ProfileUpdate {
+    newName?: string,
+    newPhoto?: ImagePickerResponse,
+    email?: string,
+    phone?: string
+}
+export default function profileReducer(state: Profile = {}, action: { type: string, payload: Profile }): Profile {
+    if (action.type === PROFILE_UPDATE) {
+        return action.payload
+    }
+    return state
+}
+
+export const fetchProfileThunk = (
+    token: string, setLoading: (loading: boolean) => void = () => {}) => async (dispatch: (action: any) => any, getState: unknown) => {
+    try {
+        console.log("Auth header inside thunk is:" + `Bearer ${token}`)
+        setLoading(true)
+        let profile = await axios.get("/user", { headers: { Authorization: `Bearer ${token}` } })
+        setLoading(false)
+        console.log("Profile inside thunk:" + JSON.stringify(profile))
+        dispatch({ type: PROFILE_UPDATE, payload: profile.data })
+    }
+    catch (err) {
+        console.log("Entered thunk catch")
+        dispatch({ type: PROFILE_UPDATE, payload: { error: err } })
+    }
+
+}
+
+export const updateProfileThunk = (
+    password: string,
+    { newName, newPhoto, email, phone }: ProfileUpdate,
+    setLoading: (loading: boolean) => void = () => {}) => async (dispatch: (action: any) => any, getState: unknown) => {
+        try {
+            console.log("Entered the update profile thunk")
+            let body = new FormData()
+            body.append("password", password)
+            body.append("email", email)
+            body.append("phone", phone)
+            if (newName)
+                body.append("name", newName)
+            if (newPhoto)
+                body.append("profilePicture", {
+                    uri: newPhoto?.uri,
+                    name: newPhoto?.fileName,
+                    type: newPhoto?.type,
+                })
+            setLoading(true)
+            let newProfile = await axios.put("/user_profile", body)
+            setLoading(false)
+            dispatch({ type: PROFILE_UPDATE, payload: newProfile.data })
+
+        }
+        catch (err) {
+            console.log("Entered thunk catch")
+            dispatch({ type: PROFILE_UPDATE, payload: { error: err } })
+        }
+    }

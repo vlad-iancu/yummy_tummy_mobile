@@ -5,9 +5,9 @@ import EmailIcon from '../../assets/email.svg'
 import PhoneIcon from '../../assets/phone.svg'
 import RippleButton from '../utils/RippleButton'
 interface ProfileDataProps {
-    email: string,
-    phone: string,
-    name: string,
+    email?: string,
+    phone?: string,
+    name?: string,
     onNameChanged: (newName: string) => void,
     onCancel: () => void
 }
@@ -35,7 +35,6 @@ export default function ProfileData({ email, phone, name, onNameChanged, onCance
         onNameChanged(newName)
         setNewName("")
     }
-    console.log(`visible:${!editingName ? newName === name : true} disabled: ${newName ? newName != name : false}`)
     return (
         <View style={styles.profileContainer}>
             <View style={styles.profileField}>
