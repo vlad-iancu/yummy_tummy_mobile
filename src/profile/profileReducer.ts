@@ -7,15 +7,16 @@ export interface Profile {
     email?: string,
     phone?: string,
     photoUrl?: string,
-    error?: any
+    error?: any,
+    loaded: boolean,
 }
 interface ProfileUpdate {
     newName?: string,
     newPhoto?: ImagePickerResponse,
     email?: string,
-    phone?: string
+    phone?: string,
 }
-export default function profileReducer(state: Profile = {}, action: { type: string, payload: Profile }): Profile {
+export default function profileReducer(state: Profile = {loaded: false}, action: { type: string, payload: Profile }): Profile {
     if (action.type === PROFILE_UPDATE) {
         return action.payload
     }
@@ -30,11 +31,11 @@ export const fetchProfileThunk = (
         let profile = await axios.get("/user", { headers: { Authorization: `Bearer ${token}` } })
         setLoading(false)
         console.log("Profile inside thunk:" + JSON.stringify(profile))
-        dispatch({ type: PROFILE_UPDATE, payload: profile.data })
+        dispatch({ type: PROFILE_UPDATE, payload: {...profile.data, loaded: true} })
     }
     catch (err) {
         console.log("Entered thunk catch")
-        dispatch({ type: PROFILE_UPDATE, payload: { error: err } })
+        dispatch({ type: PROFILE_UPDATE, payload: { error: err, loaded: true } })
     }
 
 }
@@ -60,11 +61,11 @@ export const updateProfileThunk = (
             setLoading(true)
             let newProfile = await axios.put("/user_profile", body)
             setLoading(false)
-            dispatch({ type: PROFILE_UPDATE, payload: newProfile.data })
+            dispatch({ type: PROFILE_UPDATE, payload: {...newProfile.data, loaded: true} })
 
         }
         catch (err) {
             console.log("Entered thunk catch")
-            dispatch({ type: PROFILE_UPDATE, payload: { error: err } })
+            dispatch({ type: PROFILE_UPDATE, payload: { error: err, loaded: true } })
         }
     }

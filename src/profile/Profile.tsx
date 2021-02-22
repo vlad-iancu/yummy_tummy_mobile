@@ -26,12 +26,13 @@ export default function Profile({ navigation }: ProfileProps) {
     let dispatch = useDispatch()
     useEffect(() => {
         if (!error && token) {
-            dispatch(fetchProfileThunk(token, progressBarContext.setLoading))
+            if (!profile || !profile.loaded)
+                dispatch(fetchProfileThunk(token, progressBarContext.setLoading))
         }
         else {
             Alert.prompt("", error)
         }
-    }, [token, error])
+    }, [token, error, profile])
     useEffect(() => {
         if (profile && !profile.error) {
             navigation.setOptions({ headerTitle: profile.name, headerTitleAlign: "center" })
