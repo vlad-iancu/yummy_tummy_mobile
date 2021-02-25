@@ -1,0 +1,38 @@
+import { Language } from "./Language";
+
+const lang: Language = {
+    alreadyHaveAnAccountQuestion: "Aveți deja un cont?",
+    authError: "Eroare de autentificare",
+    camera: "Cameră",
+    cancel: "Anulează",
+    code: "ro",
+    confirm: "Confirmă",
+    discard: "Renunță",
+    edit: "Editează",
+    email: "Email",
+    error: "A Apărut o eroare",
+    gallery: "Galerie",
+    goToLogin: "Reautentificare",
+    home: "Acasă",
+    keep: "Pastrează",
+    language: "Limbă",
+    login: "Intră în cont",
+    logout: "Deconectare",
+    name: "Nume",
+    noAccountQuestion: "Nu aveți un cont?",
+    noUserName: "Niciun nume",
+    notAuthenticated: "Nu sunteți autentificat",
+    password: "Parolă",
+    phone: "Telefon",
+    profile: "Profil",
+    reEnterYourPasswordMessage: "Reintroduceți parola",
+    register: "Înregistrați-vă",
+    registrationSuccessful: "Cont creat cu succes",
+    save: "Salvează",
+    search: "Caută",
+    settings: "Setări",
+    signIn: "Intră în cont",
+    signUp: "Creează un cont nou",
+}
+
+export default lang

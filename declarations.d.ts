@@ -1,8 +1,8 @@
 declare module "*.svg" {
-    import { SvgProps } from "react-native-svg";
-    const content: React.FC<SvgProps>;
-    export default content;
-  }
+  import { SvgProps } from "react-native-svg";
+  const content: React.FC<SvgProps>;
+  export default content;
+}
 declare module "react-native-encrypted-storage" {
   export default class EncryptedStorage {
     /**
@@ -27,9 +27,9 @@ declare module "react-native-encrypted-storage" {
      * @param {string} key - A string that is associated to a value.
      * @param {Function} cb - The function to call when the operation completes.
      */    /**
-     * Deletes data from the disk, using SharedPreferences or KeyChain, depending on the platform.
-     * @param {string} key - A string that is associated to a value.
-     */
+   * Deletes data from the disk, using SharedPreferences or KeyChain, depending on the platform.
+   * @param {string} key - A string that is associated to a value.
+   */
     static removeItem(key: string): Promise<void>;
     /**
      * Deletes data from the disk, using SharedPreferences or KeyChain, depending on the platform.
@@ -44,5 +44,10 @@ declare module "react-native-encrypted-storage" {
      * Clears all data from disk, using SharedPreferences or KeyChain, depending on the platform.
      * @param {Function} cb - The function to call when the operation completes.
      */
+  }
 }
+declare module "react-native-ico-flags" {
+  export default class Icon extends React.Component<any>{
+    constructor(props: any)
+  }
 }

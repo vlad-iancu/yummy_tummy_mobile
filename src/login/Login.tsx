@@ -9,6 +9,7 @@ import { StackNavigationProp } from '@react-navigation/stack'
 import { ProgressBarContext } from '../../App'
 import EncryptedStorage from 'react-native-encrypted-storage'
 import { CommonActions, StackActions } from '@react-navigation/native'
+import { LanguageContext } from '../GlobalContext'
 
 interface LoginProps {
     navigation: StackNavigationProp<any, any>
@@ -19,31 +20,21 @@ export default function Login({ navigation }: LoginProps) {
     let [phone, setPhone] = useState("")
     let [password, setPassword] = useState("")
     let progressBarContext = useContext(ProgressBarContext)
+    let { language } = useContext(LanguageContext)
     const login = () => {
         progressBarContext.setLoading(true)
         axios.post("/login", { email, phone, password })
             .then(result => {
-                if (result.status == 200) {
-                    //Alert.alert("", "Login successful")
-                }
                 EncryptedStorage.setItem("authToken", result.data.token)
-                .then(() => {
-                    navigation.reset({
-                        index: 0,
-                        routes: [
-                            {name: "Main"}
-                        ]
-                    })
-                    /* navigation.dispatch(
-                        CommonActions.reset({
+                    .then(() => {
+                        navigation.reset({
                             index: 0,
                             routes: [
-                                {name: "Home"}
+                                { name: "Main" }
                             ]
                         })
-                    ) */
-                    navigation.navigate("Main")
-                })
+                        navigation.navigate("Main")
+                    })
             })
             .catch(err => {
                 Alert.alert("", err.response.data.message)
@@ -64,7 +55,7 @@ export default function Login({ navigation }: LoginProps) {
                     <EmailIcon width={16} height={16} style={styles.icon} />
                     <TextInput
                         style={styles.text}
-                        placeholder="Email"
+                        placeholder={language.email}
                         selectionColor={"#00000077"}
                         onChangeText={setEmail} />
                 </View>
@@ -72,14 +63,14 @@ export default function Login({ navigation }: LoginProps) {
                     <PhoneIcon width={16} height={16} style={styles.icon} />
                     <TextInput
                         style={styles.text}
-                        placeholder="Phone"
+                        placeholder={language.phone}
                         selectionColor={"#00000077"}
                         onChangeText={setPhone} />
                 </View>
                 <View style={styles.textContainer}>
                     <TextInput
                         style={[styles.text, { marginLeft: 40 }]}
-                        placeholder="Password"
+                        placeholder={language.password}
                         selectionColor={"#00000077"}
                         secureTextEntry={true}
                         onChangeText={setPassword} />
@@ -90,13 +81,13 @@ export default function Login({ navigation }: LoginProps) {
                         rippleColor="white"
                         style={styles.touchable}
                         onPress={login}>
-                        <Text style={styles.buttonText}>Login</Text>
+                        <Text style={styles.buttonText}>{language.login}</Text>
                     </RippleButton>
                 </View>
                 <View
                     style={{ marginLeft: 10, marginBottom: 10, flexDirection: "row" }}>
-                    <Text>Don't have an account?</Text>
-                    <Text style={styles.link} onPress={() => navigation.navigate("Register")} >Sign up</Text>
+                    <Text>{language.noAccountQuestion}</Text>
+                    <Text style={styles.link} onPress={() => navigation.navigate("Register")} >{language.signUp}</Text>
                 </View>
             </View>
         </View>
@@ -120,9 +111,6 @@ let styles = StyleSheet.create({
         height: 250,
         backgroundColor: "white",
         borderRadius: 10,
-        //    elevation: 5,
-        //    shadowColor: "lightgray",
-        //    shadowRadius: 3,
     },
     text: {
         flex: 1,
@@ -133,11 +121,6 @@ let styles = StyleSheet.create({
         padding: 5,
         borderColor: "lightgray",
         borderWidth: 1,
-        //backgroundColor: "white",
-        //elevation: 3,
-        //shadowColor: "lightgray",
-        //shadowRadius: 1,
-        //shadowOffset: { width: 0, height: 0 },
     },
     textContainer: {
         flexDirection: "row"

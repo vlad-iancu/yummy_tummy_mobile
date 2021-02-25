@@ -8,6 +8,8 @@ import UserIcon from '../../assets/user.svg'
 import { StackNavigationProp } from '@react-navigation/stack'
 import RippleButton from '../utils/RippleButton';
 import { ProgressBarContext } from '../../App';
+import { LanguageContext } from '../GlobalContext';
+
 interface RegisterProps {
     navigation: StackNavigationProp<any, any>
 }
@@ -17,12 +19,13 @@ export default function Register({ navigation }: RegisterProps) {
     let [phone, setPhone] = useState("")
     let [password, setPassword] = useState("")
     let progressBarContext = useContext(ProgressBarContext)
+    let { language } = useContext(LanguageContext)
     let register = () => {
         progressBarContext.setLoading(true)
         axios.post(`/register`, { email, name, phone, password })
             .then(result => {
                 let text = ""
-                if (result.status == 200) text = "Registration successful"
+                if (result.status == 200) text = language.registrationSuccessful
                 else text = result.data.message
                 Alert.alert("", text)
             })
@@ -40,28 +43,28 @@ export default function Register({ navigation }: RegisterProps) {
             <View style={styles.cardContainer}>
                 <View style={styles.textContainer}>
                     <UserIcon width={16} height={16} style={styles.icon} />
-                    <TextInput style={styles.text} placeholder="Name" selectionColor={"#00000077"} value={name} onChangeText={setName} />
+                    <TextInput style={styles.text} placeholder={language.name} selectionColor={"#00000077"} value={name} onChangeText={setName} />
                 </View>
                 <View style={styles.textContainer}>
                     <EmailIcon width={16} height={16} style={styles.icon} />
-                    <TextInput style={styles.text} placeholder="Email" selectionColor={"#00000077"} value={email} onChangeText={setEmail} />
+                    <TextInput style={styles.text} placeholder={language.email} selectionColor={"#00000077"} value={email} onChangeText={setEmail} />
                 </View>
                 <View style={styles.textContainer}>
                     <PhoneIcon width={16} height={16} style={styles.icon} />
-                    <TextInput style={styles.text} placeholder="Phone" selectionColor={"#00000077"} value={phone} onChangeText={setPhone} />
+                    <TextInput style={styles.text} placeholder={language.phone} selectionColor={"#00000077"} value={phone} onChangeText={setPhone} />
                 </View>
                 <View style={styles.textContainer}>
-                    <TextInput style={[styles.text, { marginLeft: 40 }]} placeholder="Password" selectionColor={"#00000077"}
+                    <TextInput style={[styles.text, { marginLeft: 40 }]} placeholder={language.password} selectionColor={"#00000077"}
                         value={password} onChangeText={setPassword} secureTextEntry={true} />
                 </View>
                 <View style={styles.buttonLarge}>
                     <RippleButton duration={750} rippleColor="white" style={styles.touchable} onPress={register} >
-                        <Text style={styles.buttonText}>Register</Text>
+                        <Text style={styles.buttonText}>{language.register}</Text>
                     </RippleButton>
                 </View>
                 <View style={{ marginLeft: 10, marginBottom: 10, flexDirection: "row" }}>
-                    <Text>Already have an account?</Text>
-                    <Text style={styles.link} onPress={() => navigation.navigate("Login")}>Sign In</Text>
+                    <Text>{language.alreadyHaveAnAccountQuestion}</Text>
+                    <Text style={styles.link} onPress={() => navigation.navigate("Login")}>{language.signIn}</Text>
                 </View>
             </View>
         </View>
@@ -87,9 +90,6 @@ let styles = StyleSheet.create({
         height: 350,
         backgroundColor: "white",
         borderRadius: 10,
-        //    elevation: 5,
-        //    shadowColor: "lightgray",
-        //    shadowRadius: 3,
     },
     text: {
         flex: 1,
@@ -100,16 +100,10 @@ let styles = StyleSheet.create({
         padding: 5,
         borderColor: "lightgray",
         borderWidth: 1,
-        //backgroundColor: "white",
-        //elevation: 3,
-        //shadowColor: "lightgray",
-        //shadowRadius: 1,
-        //shadowOffset: { width: 0, height: 0 },
     },
     textContainer: {
         flexDirection: "row"
     },
-    /* marginTop={16} */ /* marginLeft={10} */ /* marginRight={5} */
     icon: {
         marginTop: 16,
         marginLeft: 10,

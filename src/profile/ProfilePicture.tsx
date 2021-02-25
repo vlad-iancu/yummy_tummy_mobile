@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { StyleSheet, View, Text } from 'react-native'
 import FastImage from 'react-native-fast-image'
 import RippleButton from '../utils/RippleButton'
@@ -6,6 +6,7 @@ import AntIcon from 'react-native-vector-icons/AntDesign'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
 import { launchImageLibrary, launchCamera } from 'react-native-image-picker'
 import { } from 'react-native-device-info'
+import { LanguageContext } from '../GlobalContext'
 type Photo = {
     uri?: string
     fileName?: string,
@@ -19,6 +20,7 @@ interface ProfilePictureProps {
 }
 
 export default function ProfilePicture({ uri, onImageChange }: ProfilePictureProps) {
+    let { language } = useContext(LanguageContext)
     const pickFromGallery = () => {
         launchImageLibrary({ mediaType: "photo" }, response => {
             if (!response.didCancel)
@@ -47,13 +49,13 @@ export default function ProfilePicture({ uri, onImageChange }: ProfilePicturePro
                 <RippleButton duration={300} rippleColor="#DDDDDD" onPress={pickFromGallery} style={styles.button}>
                     <View style={styles.centeredView}>
                         <FontAwesomeIcon name="image" color="white" size={20} />
-                        <Text style={styles.text}>Gallery</Text>
+                        <Text style={styles.text}>{language.gallery}</Text>
                     </View>
                 </RippleButton>
                 <RippleButton duration={300} rippleColor="#DDDDDD" onPress={pickFromCamera} style={styles.button}>
                     <View style={styles.centeredView}>
                         <AntIcon name="camera" color="white" size={20} />
-                        <Text style={styles.text}>Camera</Text>
+                        <Text style={styles.text}>{language.camera}</Text>
                     </View>
                 </RippleButton>
             </View>

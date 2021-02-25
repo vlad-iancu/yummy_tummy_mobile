@@ -16,7 +16,7 @@ interface ProfileUpdate {
     email?: string,
     phone?: string,
 }
-export default function profileReducer(state: Profile = {loaded: false}, action: { type: string, payload: Profile }): Profile {
+export default function profileReducer(state: Profile = { loaded: false }, action: { type: string, payload: Profile }): Profile {
     if (action.type === PROFILE_UPDATE) {
         return action.payload
     }
@@ -24,28 +24,24 @@ export default function profileReducer(state: Profile = {loaded: false}, action:
 }
 
 export const fetchProfileThunk = (
-    token: string, setLoading: (loading: boolean) => void = () => {}) => async (dispatch: (action: any) => any, getState: unknown) => {
-    try {
-        console.log("Auth header inside thunk is:" + `Bearer ${token}`)
-        setLoading(true)
-        let profile = await axios.get("/user", { headers: { Authorization: `Bearer ${token}` } })
-        setLoading(false)
-        console.log("Profile inside thunk:" + JSON.stringify(profile))
-        dispatch({ type: PROFILE_UPDATE, payload: {...profile.data, loaded: true} })
-    }
-    catch (err) {
-        console.log("Entered thunk catch")
-        dispatch({ type: PROFILE_UPDATE, payload: { error: err, loaded: true } })
-    }
+    token: string, setLoading: (loading: boolean) => void = () => { }) => async (dispatch: (action: any) => any, getState: unknown) => {
+        try {
+            setLoading(true)
+            let profile = await axios.get("/user", { headers: { Authorization: `Bearer ${token}` } })
+            setLoading(false)
+            dispatch({ type: PROFILE_UPDATE, payload: { ...profile.data, loaded: true } })
+        }
+        catch (err) {
+            dispatch({ type: PROFILE_UPDATE, payload: { error: err, loaded: true } })
+        }
 
-}
+    }
 
 export const updateProfileThunk = (
     password: string,
     { newName, newPhoto, email, phone }: ProfileUpdate,
-    setLoading: (loading: boolean) => void = () => {}) => async (dispatch: (action: any) => any, getState: unknown) => {
+    setLoading: (loading: boolean) => void = () => { }) => async (dispatch: (action: any) => any, _: () => unknown) => {
         try {
-            console.log("Entered the update profile thunk")
             let body = new FormData()
             body.append("password", password)
             body.append("email", email)
@@ -61,7 +57,7 @@ export const updateProfileThunk = (
             setLoading(true)
             let newProfile = await axios.put("/user_profile", body)
             setLoading(false)
-            dispatch({ type: PROFILE_UPDATE, payload: {...newProfile.data, loaded: true} })
+            dispatch({ type: PROFILE_UPDATE, payload: { ...newProfile.data, loaded: true } })
 
         }
         catch (err) {

@@ -6,13 +6,14 @@ import { Alert, StyleSheet, Text, View } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import { ProgressBarContext } from '../App';
 import { DrawerContentComponentProps, DrawerContentOptions } from '@react-navigation/drawer/lib/typescript/src/types';
-import axios from 'axios';
 import Profile from './profile/Profile';
 import { Profile as UserProfile } from './profile/profileReducer'
 import useAuthToken from './utils/useAuthToken';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProfileThunk } from './profile/profileReducer';
 import FastImage from 'react-native-fast-image';
+import { LanguageContext } from './GlobalContext';
+import Settings from './settings/Settings';
 
 const Drawer = createDrawerNavigator()
 
@@ -32,11 +33,12 @@ export default function Main({ navigation }: MainProps) {
     let [token, authError] = useAuthToken()
     let dispatch = useDispatch()
     let user: UserProfile = useSelector((state: any) => state.profile)
-    const goToLogin = useCallback((message: string = "You are not authenticated") => {
+    let { language } = useContext(LanguageContext)
+    const goToLogin = useCallback((message: string = language.notAuthenticated) => {
         Alert.alert("", message,
             [
                 {
-                    text: "Go to login",
+                    text: language.goToLogin,
                     onPress: () => {
                         navigation.reset({
                             index: 0,
@@ -49,7 +51,7 @@ export default function Main({ navigation }: MainProps) {
             ], {
             cancelable: false
         })
-    }, [])
+    }, [language])
     const logout = () => {
         EncryptedStorage.removeItem("authToken")
             .then(() => {
@@ -78,12 +80,14 @@ export default function Main({ navigation }: MainProps) {
                 headerShown: true,
             }
         }>
-            <Drawer.Screen component={Home} name="Home" options={{ title: "Home" }} />
-            <Drawer.Screen component={Profile} name="Profile" options={{ title: "Profile" }} />
+            <Drawer.Screen component={Home} name={language.home} options={{ headerTitle: "" }} />
+            <Drawer.Screen component={Profile} name={language.profile} options={{ title: language.profile }} />
+            <Drawer.Screen component={Settings} name={language.settings} options={{title: language.settings}} />
         </Drawer.Navigator>
     )
 }
 function getDrawerContent(logout: () => void, { email, phone, name, photoUrl, }: User) {
+    let { language } = useContext(LanguageContext)
     return function DrawerContent(props: DrawerContentComponentProps<DrawerContentOptions>) {
         return (
             <DrawerContentScrollView>
@@ -96,7 +100,7 @@ function getDrawerContent(logout: () => void, { email, phone, name, photoUrl, }:
                     </View>
                 </View>
                 <DrawerItemList {...props} />
-                <DrawerItem label="Logout" onPress={() => { logout() }} />
+                <DrawerItem label={language.logout} onPress={() => { logout() }} />
             </DrawerContentScrollView>
         )
     }

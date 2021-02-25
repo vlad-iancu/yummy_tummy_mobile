@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { StyleSheet, Text, TextInput, View } from 'react-native'
 import UserIcon from '../../assets/user.svg'
 import EmailIcon from '../../assets/email.svg'
 import PhoneIcon from '../../assets/phone.svg'
 import RippleButton from '../utils/RippleButton'
+import { LanguageContext } from '../GlobalContext'
 interface ProfileDataProps {
     email?: string,
     phone?: string,
@@ -18,9 +19,8 @@ export default function ProfileData({ email, phone, name, onNameChanged, onCance
     let [nameTextHeight, setNameTextHeight] = useState(0)
     let [editingName, setEditingName] = useState(false)
     let [newName, setNewName] = useState("")
-
+    let { language } = useContext(LanguageContext)
     const onEdit = () => {
-        console.log("onEdit")
         setEditingName(true)
     }
 
@@ -48,7 +48,7 @@ export default function ProfileData({ email, phone, name, onNameChanged, onCance
                     :
                     <Text style={styles.text}
                         onLayout={({ nativeEvent: { layout: { height } } }) => { setNameTextHeight(height) }}>
-                        {name ?? "<no username>"}
+                        {name ?? `<${language.noUserName}>`}
                     </Text>}
             </View>
             <View style={styles.profileField}>
@@ -65,10 +65,10 @@ export default function ProfileData({ email, phone, name, onNameChanged, onCance
                     style={styles.button}
                     visible={editingName ? newName != "" : false}
                     disabled={editingName ? newName === name : true} >
-                    <Text style={{ color: "white" }}>Keep</Text>
+                    <Text style={{ color: "white" }}>{language.keep}</Text>
                 </RippleButton>
                 <RippleButton onPress={() => { if (editingName) onDiscard(); else onEdit() }} style={styles.button}>
-                    <Text style={{ color: "white" }}>{editingName ? "Discard" : "Edit"}</Text>
+                    <Text style={{ color: "white" }}>{editingName ? language.discard : language.edit}</Text>
                 </RippleButton>
             </View>
 

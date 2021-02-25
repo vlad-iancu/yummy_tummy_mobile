@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import useAuthToken from '../utils/useAuthToken'
 import { Profile as UserProfile } from './profileReducer'
 import { fetchProfileThunk, updateProfileThunk } from './profileReducer'
+import { LanguageContext } from '../GlobalContext'
 
 interface ProfileProps {
     navigation: DrawerNavigationProp<any, any>
@@ -23,6 +24,7 @@ export default function Profile({ navigation }: ProfileProps) {
     let [token, error] = useAuthToken()
     let progressBarContext = useContext(ProgressBarContext)
     let profile: UserProfile = useSelector((state: any) => state.profile)
+    let { language } = useContext(LanguageContext)
     let dispatch = useDispatch()
     useEffect(() => {
         if (!error && token) {
@@ -47,7 +49,7 @@ export default function Profile({ navigation }: ProfileProps) {
             headerRight: () => {
                 return (
                     <Text style={styles.headerText} onPress={() => { setModalVisible(true) }}>
-                        {(newName || newPhoto) && "Save"}
+                        {(newName || newPhoto) && language.save}
                     </Text>)
             }
         })
@@ -60,7 +62,6 @@ export default function Profile({ navigation }: ProfileProps) {
     const updateProfile = (password: string) => {
         dispatch(updateProfileThunk(password, { ...profile, newPhoto, newName }, progressBarContext.setLoading))
     }
-    console.log("photo:" + profile?.photoUrl)
     return (
         <View style={styles.container}>
             <PasswordConfirmModal visible={modalVisible} onConfirm={updateProfile} onCancel={onModalCancel} />
