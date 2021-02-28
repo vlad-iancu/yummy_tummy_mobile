@@ -9,9 +9,16 @@ import { StackNavigationProp } from '@react-navigation/stack'
 import RippleButton from '../utils/RippleButton';
 import { ProgressBarContext } from '../../App';
 import { LanguageContext } from '../GlobalContext';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
+type RootStackParamList = {
+    Main: undefined,
+    Login: undefined,
+    Register: undefined,
+    Validate: { email?: string, phone?: string }
+}
 interface RegisterProps {
-    navigation: StackNavigationProp<any, any>
+    navigation: StackNavigationProp<RootStackParamList, "Register">
 }
 export default function Register({ navigation }: RegisterProps) {
     let [email, setEmail] = useState("")
@@ -23,11 +30,22 @@ export default function Register({ navigation }: RegisterProps) {
     let register = () => {
         progressBarContext.setLoading(true)
         axios.post(`/register`, { email, name, phone, password })
-            .then(result => {
+            .then(async result => {
                 let text = ""
                 if (result.status == 200) text = language.registrationSuccessful
                 else text = result.data.message
-                Alert.alert("", text)
+                console.log("Going to validate...")
+                if (email)
+                    await EncryptedStorage.setItem("emailToValidate", email)
+                if (phone)
+                    await EncryptedStorage.setItem("phoneToValidate", phone)
+                navigation.reset({
+                    index: 0,
+                    routes: [
+                        { name: "Validate", params: { email, phone } }
+                    ]
+                })
+
             })
             .catch(err => {
                 Alert.alert("", err.response.data.message)

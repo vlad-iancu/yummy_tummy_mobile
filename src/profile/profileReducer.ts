@@ -42,10 +42,13 @@ export const updateProfileThunk = (
     { newName, newPhoto, email, phone }: ProfileUpdate,
     setLoading: (loading: boolean) => void = () => { }) => async (dispatch: (action: any) => any, _: () => unknown) => {
         try {
+            console.log("Entered the update profile thunk")
             let body = new FormData()
             body.append("password", password)
-            body.append("email", email)
-            body.append("phone", phone)
+            if (email)
+                body.append("email", email)
+            if (phone)
+                body.append("phone", phone)
             if (newName)
                 body.append("name", newName)
             if (newPhoto)
@@ -56,6 +59,7 @@ export const updateProfileThunk = (
                 })
             setLoading(true)
             let newProfile = await axios.put("/user_profile", body)
+            console.log("Profile request has code:" + newProfile.status)
             setLoading(false)
             dispatch({ type: PROFILE_UPDATE, payload: { ...newProfile.data, loaded: true } })
 

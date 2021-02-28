@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { StyleSheet, Text, View, TextInput, TouchableNativeFeedback, Alert, Button } from 'react-native'
 import axios from 'axios'
 import Background from '../../assets/login.svg'
@@ -8,11 +8,18 @@ import RippleButton from '../utils/RippleButton'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { ProgressBarContext } from '../../App'
 import EncryptedStorage from 'react-native-encrypted-storage'
-import { CommonActions, StackActions } from '@react-navigation/native'
 import { LanguageContext } from '../GlobalContext'
+import { useDispatch } from 'react-redux'
+import { fetchProfileThunk } from '../profile/profileReducer'
 
+type RootStackParamList = {
+    Main: undefined,
+    Login: undefined,
+    Register: undefined,
+    Validate: { email?: string, phone?: string }
+}
 interface LoginProps {
-    navigation: StackNavigationProp<any, any>
+    navigation: StackNavigationProp<RootStackParamList, "Login">
 }
 
 export default function Login({ navigation }: LoginProps) {
@@ -21,12 +28,35 @@ export default function Login({ navigation }: LoginProps) {
     let [password, setPassword] = useState("")
     let progressBarContext = useContext(ProgressBarContext)
     let { language } = useContext(LanguageContext)
+    let dispatch = useDispatch()
+    useEffect(() => {
+        async function checkIfUserIsValidating() {
+            try {
+                let email = await EncryptedStorage.getItem("emailToValidate")
+                let phone = await EncryptedStorage.getItem("phoneToValidate")
+                if (phone || email) {
+                    navigation.reset({
+                        index: 0,
+                        routes: [
+                            { name: "Validate", params: { email, phone } }
+                        ]
+                    })
+                }
+            }
+            catch (err) {
+
+            }
+        }
+        checkIfUserIsValidating()
+    }, [])
     const login = () => {
         progressBarContext.setLoading(true)
         axios.post("/login", { email, phone, password })
             .then(result => {
+                console.log("We are setting this token in login:" + result.data.token)
                 EncryptedStorage.setItem("authToken", result.data.token)
                     .then(() => {
+                        dispatch(fetchProfileThunk(result.data.token, progressBarContext.setLoading))
                         navigation.reset({
                             index: 0,
                             routes: [

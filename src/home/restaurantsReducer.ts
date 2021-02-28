@@ -37,12 +37,10 @@ export default function restaurantsReducer(
             let restaurantsToAdd = action.payload.restaurants
             let pageToAdd = action.payload.page
             let restaurantPages = state.restaurants
-            console.log("We are adding to the state page " + pageToAdd)
             let newRestaurantPages = [...restaurantPages]
             let nonExistingPage = (newRestaurantPages.filter((restaurantPage) => {
                 return restaurantPage.page === pageToAdd
             })).length === 0
-            console.log("Is the page we loaded already in the state?" + !nonExistingPage)
             if (!nonExistingPage)
                 newRestaurantPages = newRestaurantPages.map((restaurantPage) => {
                     if (restaurantPage.page === pageToAdd)
@@ -54,11 +52,8 @@ export default function restaurantsReducer(
                 if (restaurantsToAdd.length > 0)
                     newRestaurantPages.push({ page: pageToAdd, restaurants: restaurantsToAdd })
             }
-            console.log("We are reducing " + newRestaurantPages.length + " restaurants")
             newRestaurantPages = newRestaurantPages.filter(page => page.restaurants.length > 0)
-            console.log("After filtering our new Pages are:" + JSON.stringify(newRestaurantPages, undefined, 4))
             newRestaurantPages.sort((p1, p2) => p1.page - p2.page)
-            console.log("After sorting our new Pages are:" + JSON.stringify(newRestaurantPages, undefined, 4))
             let missingPages = newRestaurantPages.reduce((missingPages: number[], { page }, index) => {
                 if (page != index + 1) return [...missingPages, page]
                 else return missingPages
@@ -67,8 +62,6 @@ export default function restaurantsReducer(
             if (missingPages.length === 0)
                 nextPage = newRestaurantPages.length + 1
             else nextPage = missingPages[0]
-            console.log("pagesLoaded will be" + (nextPage - 1))
-            console.log("Our new Pages are:" + JSON.stringify(newRestaurantPages, undefined, 4))
             return Object.assign({}, state, {
                 restaurants: newRestaurantPages,
                 endReached: action.payload.endReached,
@@ -96,14 +89,11 @@ export const fetchRestaurantsThunk = (token: string, setLoading: (loading: boole
         let pagesLoaded = getState().restaurants.pagesLoaded
         let searchQuery = query ?? getState().restaurants.query
         let pageToLoad = query == null ? pagesLoaded + 1 : 1
-        console.log("We are loading page " + pageToLoad + " with query " + searchQuery)
         setLoading(true)
         let restaurants = (await axios.get("/restaurants", {
             headers: { Authorization: `Bearer ${token}` },
             params: { pageSize: 20, page: pageToLoad, q: searchQuery }
         })).data.restaurants
-        console.log("Now query will be:" + (query ?? getState().restaurants.query))
-        console.log("We fetched page " + pageToLoad + " with query " + searchQuery + " and we got " + restaurants.length + " from server")
         dispatch({
             type: RESTAURANTS_ADD, payload: {
                 restaurants,

@@ -41,7 +41,7 @@ export default function Profile({ navigation }: ProfileProps) {
             setModalVisible(false)
         }
         else {
-            Alert.alert("", profile.error)
+            Alert.alert("", "Could not update the profile")
         }
     }, [profile])
     useEffect(() => {

@@ -16,9 +16,14 @@ import { LanguageContext } from './GlobalContext';
 import Settings from './settings/Settings';
 
 const Drawer = createDrawerNavigator()
-
+type RootStackParamList = {
+    Main: undefined,
+    Login: undefined,
+    Register: undefined,
+    Validate: { email?: string, phone?: string }
+}
 interface MainProps {
-    navigation: StackNavigationProp<any, any>
+    navigation: StackNavigationProp<RootStackParamList, "Main">
 }
 
 interface User {
@@ -34,6 +39,7 @@ export default function Main({ navigation }: MainProps) {
     let dispatch = useDispatch()
     let user: UserProfile = useSelector((state: any) => state.profile)
     let { language } = useContext(LanguageContext)
+
     const goToLogin = useCallback((message: string = language.notAuthenticated) => {
         Alert.alert("", message,
             [
@@ -70,10 +76,15 @@ export default function Main({ navigation }: MainProps) {
     }, [authError, goToLogin])
     useEffect(() => {
         if (!authError && token) {
-            if (user && !user.loaded)
+            if (user && !user.loaded) {
+                console.log("We are dispatching the fetchProfileThunk with this new token:" + token)
                 dispatch(fetchProfileThunk(token, setLoading))
+            }
         }
-    }, [token, goToLogin, user])
+    }, [token, user])
+    useEffect(() => {
+        console.log("User is now:" + JSON.stringify(user))
+    },[user])
     return (
         <Drawer.Navigator drawerContent={getDrawerContent(logout, user)} screenOptions={
             {
@@ -82,7 +93,7 @@ export default function Main({ navigation }: MainProps) {
         }>
             <Drawer.Screen component={Home} name={language.home} options={{ headerTitle: "" }} />
             <Drawer.Screen component={Profile} name={language.profile} options={{ title: language.profile }} />
-            <Drawer.Screen component={Settings} name={language.settings} options={{title: language.settings}} />
+            <Drawer.Screen component={Settings} name={language.settings} options={{ title: language.settings }} />
         </Drawer.Navigator>
     )
 }
@@ -105,6 +116,7 @@ function getDrawerContent(logout: () => void, { email, phone, name, photoUrl, }:
         )
     }
 }
+
 const styles = StyleSheet.create({
     photo: {
         width: 70,
