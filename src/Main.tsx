@@ -14,6 +14,7 @@ import { fetchProfileThunk } from './profile/profileReducer';
 import FastImage from 'react-native-fast-image';
 import { LanguageContext } from './GlobalContext';
 import Settings from './settings/Settings';
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
 
 const Drawer = createDrawerNavigator()
 
@@ -82,7 +83,7 @@ export default function Main({ navigation }: MainProps) {
         }>
             <Drawer.Screen component={Home} name={language.home} options={{ headerTitle: "" }} />
             <Drawer.Screen component={Profile} name={language.profile} options={{ title: language.profile }} />
-            <Drawer.Screen component={Settings} name={language.settings} options={{title: language.settings}} />
+            <Drawer.Screen component={Settings} name={language.settings} options={{ title: language.settings }} />
         </Drawer.Navigator>
     )
 }
@@ -92,7 +93,10 @@ function getDrawerContent(logout: () => void, { email, phone, name, photoUrl, }:
         return (
             <DrawerContentScrollView>
                 <View>
-                    <FastImage source={{ cache: "web", priority: "normal", uri: photoUrl }} style={styles.photo} />
+                    {
+                        photoUrl ? <FastImage source={{ cache: "web", priority: "normal", uri: photoUrl }} style={styles.photo} /> :
+                        <FontAwesomeIcon style={styles.placeholder} size={70} name="user-circle-o" color="#77777788" />
+                    }
                     <View style={styles.profileData}>
                         <Text style={[styles.text, { fontSize: 20, color: "black" }]}>{name}</Text>
                         <Text style={[styles.text, { fontSize: 14 }]}>{email}</Text>
@@ -112,8 +116,11 @@ const styles = StyleSheet.create({
         borderRadius: 35,
         margin: 10,
     },
+    placeholder: {
+        margin: 10,
+    },
     profileData: {
-        margin: 10
+        margin: 20
     },
     text: {
         color: "grey"

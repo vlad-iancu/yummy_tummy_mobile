@@ -30,7 +30,7 @@ export default function ProfilePicture({ uri, onImageChange }: ProfilePicturePro
     }
     const pickFromCamera = () => {
         launchCamera({ mediaType: "photo" }, response => {
-            if(response.errorCode) {
+            if (response.errorCode) {
                 console.log(console.log("Camera error:" + response.errorMessage))
             }
             if (!response.didCancel) {
@@ -40,11 +40,14 @@ export default function ProfilePicture({ uri, onImageChange }: ProfilePicturePro
     }
     return (
         <>
-            <FastImage source={{
-                uri: uri,
-                priority: "normal",
-                cache: "web"
-            }} style={styles.photo} />
+            {
+                uri ? <FastImage source={{
+                    uri: uri,
+                    priority: "normal",
+                    cache: "web"
+                }} style={styles.photo} /> :
+                    <FontAwesomeIcon style={styles.placeholder} size={150} name="user-circle-o" color="#77777788" />
+            }
             <View style={styles.container}>
                 <RippleButton duration={300} rippleColor="#DDDDDD" onPress={pickFromGallery} style={styles.button}>
                     <View style={styles.centeredView}>
@@ -70,6 +73,9 @@ const styles = StyleSheet.create({
     centeredView: {
         justifyContent: "center",
         alignItems: "center",
+    },
+    placeholder: {
+        margin: 10,
     },
     photo: {
         width: 150,

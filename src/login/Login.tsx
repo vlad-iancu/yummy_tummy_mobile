@@ -10,6 +10,8 @@ import { ProgressBarContext } from '../../App'
 import EncryptedStorage from 'react-native-encrypted-storage'
 import { CommonActions, StackActions } from '@react-navigation/native'
 import { LanguageContext } from '../GlobalContext'
+import { useDispatch } from 'react-redux'
+import { fetchProfileThunk } from '../profile/profileReducer'
 
 interface LoginProps {
     navigation: StackNavigationProp<any, any>
@@ -21,12 +23,14 @@ export default function Login({ navigation }: LoginProps) {
     let [password, setPassword] = useState("")
     let progressBarContext = useContext(ProgressBarContext)
     let { language } = useContext(LanguageContext)
+    let dispatch = useDispatch()
     const login = () => {
         progressBarContext.setLoading(true)
         axios.post("/login", { email, phone, password })
             .then(result => {
                 EncryptedStorage.setItem("authToken", result.data.token)
                     .then(() => {
+                        dispatch(fetchProfileThunk(result.data.token, progressBarContext.setLoading))
                         navigation.reset({
                             index: 0,
                             routes: [
