@@ -7,7 +7,7 @@ import PhoneIcon from '../../assets/phone.svg'
 import UserIcon from '../../assets/user.svg'
 import { StackNavigationProp } from '@react-navigation/stack'
 import RippleButton from '../utils/RippleButton';
-import { ProgressBarContext } from '../../App';
+import { ProgressBarContext } from '../App';
 import { LanguageContext } from '../GlobalContext';
 
 interface RegisterProps {
@@ -19,7 +19,7 @@ export default function Register({ navigation }: RegisterProps) {
     let [phone, setPhone] = useState("")
     let [password, setPassword] = useState("")
     let progressBarContext = useContext(ProgressBarContext)
-    let { language } = useContext(LanguageContext)
+    let language = useSelector<RootState,Language>(state => state.language)
     let register = () => {
         progressBarContext.setLoading(true)
         axios.post(`/register`, { email, name, phone, password })

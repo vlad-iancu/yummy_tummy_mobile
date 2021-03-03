@@ -1,7 +1,6 @@
-import React, { useContext } from 'react'
-import { StyleSheet, View, Text } from 'react-native'
+import React from 'react'
+import { StyleSheet, View } from 'react-native'
 import FastImage from 'react-native-fast-image'
-import { LanguageContext } from '../GlobalContext'
 import EllipsisText from '../utils/EllipsisText'
 
 interface RestaurantItemProps {
@@ -9,7 +8,6 @@ interface RestaurantItemProps {
     thumbnailUrl?: string
 }
 export default function RestaurantItem({ name, thumbnailUrl }: RestaurantItemProps) {
-    let languageContext = useContext(LanguageContext)
     return (
         <View style={styles.itemContainer}>
             <FastImage source={{ uri: thumbnailUrl, cache: "web" }} style={styles.thumbnail} />

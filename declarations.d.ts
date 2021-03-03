@@ -51,3 +51,6 @@ declare module "react-native-ico-flags" {
     constructor(props: any)
   }
 }
+declare module "redux-persist-sensitive-storage" {
+  export default function
+}

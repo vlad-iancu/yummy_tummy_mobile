@@ -9,36 +9,33 @@ import 'react-native-gesture-handler'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator, TransitionPresets, CardStyleInterpolators } from '@react-navigation/stack'
 import React, { useState } from 'react'
-import Login from './src/login/Login'
-import Register from './src/register/Register'
+import Login from './login/Login'
+import Register from './register/Register'
 import { applyMiddleware, createStore } from 'redux'
-import rootReducer from './src/RootReducer'
+import rootReducer from './RootReducer'
 import { Provider } from 'react-redux'
 import thunkMiddleware from 'redux-thunk'
-import ProgressBarContainer from './src/utils/ProgressBarContainer'
+import ProgressBarContainer from './utils/ProgressBarContainer'
 import axios from 'axios'
-import { BASE_URL } from './src/Constants'
-import Main from './src/Main'
-import {LanguageContext, ProgressBarContext} from './src/GlobalContext'
-import en from './src/locales/en'
-import ro from './src/locales/ro'
-import LanguageProvider from './src/utils/LanguageProvider'
+import { BASE_URL } from './Constants'
+import Main from './Main'
+import {ProgressBarContext} from './GlobalContext'
+import en from './locales/en'
+import ro from './locales/ro'
+import LanguageProvider from './utils/useLanguageSetup'
+import store from './Store'
+import useLanguageSetup from './utils/useLanguageSetup'
 axios.defaults.baseURL = BASE_URL
 
 const Stack = createStackNavigator()
 
-const enhancer = applyMiddleware(thunkMiddleware)
+/* const enhancer = applyMiddleware(thunkMiddleware)
 
-const store = createStore(rootReducer, enhancer)
+const store = createStore(rootReducer, enhancer) */
 
-//const ProgressBarContext = React.createContext({ loading: false, setLoading: (loading: boolean) => { } })
-//const LanguageContext = React.createContext({ language: "en", setLanguage: (lang: string) => { } })
 export default function App(props: any) {
-  let [loading, setLoading] = useState(false)
   return (
     <Provider store={store}>
-      <ProgressBarContext.Provider value={{ loading, setLoading }}>
-        <LanguageProvider>
           <ProgressBarContainer>
             <NavigationContainer>
               <Stack.Navigator initialRouteName="Login" screenOptions={{
@@ -52,8 +49,6 @@ export default function App(props: any) {
               </Stack.Navigator>
             </NavigationContainer>
           </ProgressBarContainer>
-        </LanguageProvider>
-      </ProgressBarContext.Provider>
     </Provider>
   )
 }

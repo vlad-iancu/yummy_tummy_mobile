@@ -1,18 +1,21 @@
 import { DrawerNavigationProp } from '@react-navigation/drawer';
-import React, { useContext } from 'react'
+import React from 'react'
 import { Alert, StyleSheet, Text, View } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker'
-import { LanguageContext } from '../GlobalContext';
 import en from '../locales/en'
 import ro from '../locales/ro'
 import EncryptedStorage from 'react-native-encrypted-storage'
 import { Language } from '../locales/Language';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../Store';
+import { UiActions } from '../UISlice';
 
 interface SettingsProps {
     navigation: DrawerNavigationProp<any, any>
 }
 export default function Settings({ navigation }: SettingsProps) {
-    let { language, setLanguage } = useContext(LanguageContext)
+    let language = useSelector<RootState, Language>(state => state.ui.language)
+    let dispatch = useDispatch()
     const saveLanguage = (lang: Language) => {
         EncryptedStorage.setItem("lang", lang.code)
         .then(() => {
@@ -30,7 +33,7 @@ export default function Settings({ navigation }: SettingsProps) {
                 defaultValue={language}
                 dropDownStyle={{ width: "50%" }}
                 onChangeItem={({ value }: any) => {
-                    setLanguage(value)
+                    dispatch(UiActions.language(value))
                     saveLanguage(value)
                 }}>
 

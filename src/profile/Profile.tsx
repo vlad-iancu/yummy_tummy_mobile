@@ -1,35 +1,35 @@
 import { DrawerNavigationProp } from '@react-navigation/drawer'
 import React, { useContext, useEffect, useState } from 'react'
-import { Alert, Modal, StyleSheet, Text, TextInput, TouchableHighlight, View } from 'react-native'
-import { ProgressBarContext } from '../../App'
+import { Alert, StyleSheet, Text, TextInput, TouchableHighlight, View } from 'react-native'
 import PasswordConfirmModal from './PasswordConfirmModal'
 import { ImagePickerResponse } from 'react-native-image-picker'
 import ProfileData from './ProfileData'
 import ProfilePicture from './ProfilePicture'
 import { useDispatch, useSelector } from 'react-redux'
 import useAuthToken from '../utils/useAuthToken'
-import { Profile as UserProfile } from './profileReducer'
-import { fetchProfileThunk, updateProfileThunk } from './profileReducer'
+import { ProfileState as UserProfile } from './ProfileTypes'
+import { fetchProfileAsyncThunk } from './ProfileThunks'
 import { LanguageContext } from '../GlobalContext'
+import { updateProfileAsyncThunk } from './ProfileThunks'
+import { RootState } from '../Store'
+import { Language } from '../locales/Language'
 
 interface ProfileProps {
     navigation: DrawerNavigationProp<any, any>
 }
 type Photo = ImagePickerResponse
-const NAME_TEXT_PADDING = 4
 export default function Profile({ navigation }: ProfileProps) {
     let [modalVisible, setModalVisible] = useState(false)
     let [newName, setNewName] = useState<string>()
     let [newPhoto, setNewPhoto] = useState<Photo>()
     let [token, error] = useAuthToken()
-    let progressBarContext = useContext(ProgressBarContext)
     let profile: UserProfile = useSelector((state: any) => state.profile)
-    let { language } = useContext(LanguageContext)
+    let language = useSelector<RootState,Language>(state => state.ui.language)
     let dispatch = useDispatch()
     useEffect(() => {
         if (!error && token) {
             if (!profile || !profile.loaded)
-                dispatch(fetchProfileThunk(token, progressBarContext.setLoading))
+                dispatch(fetchProfileAsyncThunk(token))
         }
         else {
             Alert.prompt("", error)
@@ -60,7 +60,7 @@ export default function Profile({ navigation }: ProfileProps) {
         setModalVisible(false)
     }
     const updateProfile = (password: string) => {
-        dispatch(updateProfileThunk(password, { ...profile, newPhoto, newName }, progressBarContext.setLoading))
+        dispatch(updateProfileAsyncThunk({password, ...profile, newPhoto, newName }))
     }
     return (
         <View style={styles.container}>

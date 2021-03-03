@@ -4,32 +4,28 @@ import { Language } from '../locales/Language'
 import EncryptedStorage from 'react-native-encrypted-storage'
 import en from '../locales/en'
 import ro from '../locales/ro'
-interface LanguageProviderProps {
-    children: React.ReactNode
-}
-export default function LanguageProvider({children}: LanguageProviderProps) {
-    let [language, setLanguage] = useState<Language>(en)
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from '../Store'
+import { UiActions } from '../UISlice'
+
+export default function useLanguageSetup() {
+    let language = useSelector<RootState, Language>(state => state.ui.language)
+    let dispatch = useDispatch()
     useEffect(() => {
         EncryptedStorage.getItem("lang")
         .then(code => {
-            console.log("Got language " + code)
             if(code) {
-                setLanguage(getLanguageByCode(code))
+                dispatch(UiActions.language(getLanguageByCode(code)))
             }
             else {
-                setLanguage(en)
+                dispatch(UiActions.language(en))
             }
             
         })
         .catch(_ => {
-            setLanguage(en)
+            dispatch(UiActions.language(en))
         })
     },[])
-    return (
-        <LanguageContext.Provider value={{language, setLanguage}}>
-            {children}
-        </LanguageContext.Provider>
-    )
 }
 
 export function getLanguageByCode(code: string): Language {

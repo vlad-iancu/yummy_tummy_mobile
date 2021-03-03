@@ -3,12 +3,12 @@ import { ActivityIndicator, Alert, FlatList, ScrollView, StyleSheet, Text, View 
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { useDispatch, useSelector } from 'react-redux';
 import useAuthToken from '../utils/useAuthToken';
-import { fetchRestaurantsThunk, RestaurantState } from './restaurantsReducer';
+import { fetchNextRestaurantPageThunk } from './RestaurantThunks';
 import RestaurantItem from './RestaurantItem';
 import RestaurantSearch from './RestaurantSearch';
 import * as Progress from 'react-native-progress'
-import { LanguageContext } from '../GlobalContext';
-import { RootState } from '../RootReducer';
+import { RootState } from '../Store';
+import { Language } from '../locales/Language';
 
 interface HomeProps {
     navigation: DrawerNavigationProp<any, any>
@@ -18,14 +18,14 @@ export default function Home({ navigation }: HomeProps) {
     let dispatch = useDispatch()
     let [token, authError] = useAuthToken()
     let { restaurants, error, endReached } = useSelector((state: RootState) => state.restaurants)
-    let { language } = useContext(LanguageContext)
+    let language = useSelector<RootState,Language>(state => state.ui.language)
     useEffect(() => {
         navigation.setOptions({ headerRight: () => <RestaurantSearch {...{ loading, setLoading }} /> })
     }, [])
 
     useEffect(() => {
         if (token && !error)
-            dispatch(fetchRestaurantsThunk(token, setLoading, ""))
+            dispatch(fetchNextRestaurantPageThunk({token, pageSize: 20, q: ""}))
     }, [token, error])
     useEffect(() => {
         if (error)
@@ -47,14 +47,15 @@ export default function Home({ navigation }: HomeProps) {
                 style={{ marginBottom: 60 }}
                 data={restaurants.map((page) => page.restaurants).reduce((arr, page) => {
                     return arr.concat(page)
-                })}
+                }, [])}
                 renderItem={({ item }) => {
                     return <RestaurantItem {...item} />
                 }}
+                showsVerticalScrollIndicator={false}
                 keyExtractor={(restaurant) => restaurant.id.toString()}
                 ListFooterComponent={renderFooter}
                 onEndReachedThreshold={0.4}
-                onEndReached={() => { if (!loading && !endReached) dispatch(fetchRestaurantsThunk(token, setLoading)) }} />
+                onEndReached={() => { if (!loading && !endReached) dispatch(fetchNextRestaurantPageThunk({ token, pageSize: 20, q: null })) }} />
         </View>
 
     )

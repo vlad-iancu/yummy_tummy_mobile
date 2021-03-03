@@ -1,10 +1,16 @@
-import React, { useContext } from 'react'
-import { StyleSheet, View } from 'react-native'
+import React, { useContext, useEffect } from 'react'
+import { Alert, StyleSheet, View } from 'react-native'
 import { useSelector } from 'react-redux'
 import * as Progress from 'react-native-progress'
-import { ProgressBarContext } from '../../App'
+import { RootState } from '../Store'
 export default function ProgressBarContainer(props: any) {
-    let { loading } = useContext(ProgressBarContext)
+    let loading = useSelector<RootState>(state => state.ui.loading)
+    let error: string = useSelector<RootState, string>(state => state.ui.error ?? "")
+    useEffect(() => {
+        if (error) {
+            Alert.alert("", error)
+        }
+    }, [error])
     return (
         <View style={styles.container}>
             <View style={styles.container}>

@@ -4,7 +4,9 @@ import UserIcon from '../../assets/user.svg'
 import EmailIcon from '../../assets/email.svg'
 import PhoneIcon from '../../assets/phone.svg'
 import RippleButton from '../utils/RippleButton'
-import { LanguageContext } from '../GlobalContext'
+import { Language } from '../locales/Language'
+import { RootState } from '../Store'
+import { useSelector } from 'react-redux'
 interface ProfileDataProps {
     email?: string,
     phone?: string,
@@ -19,7 +21,7 @@ export default function ProfileData({ email, phone, name, onNameChanged, onCance
     let [nameTextHeight, setNameTextHeight] = useState(0)
     let [editingName, setEditingName] = useState(false)
     let [newName, setNewName] = useState("")
-    let { language } = useContext(LanguageContext)
+    let language = useSelector<RootState,Language>(state => state.ui.language)
     const onEdit = () => {
         setEditingName(true)
     }

@@ -7,6 +7,9 @@ import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
 import { launchImageLibrary, launchCamera } from 'react-native-image-picker'
 import { } from 'react-native-device-info'
 import { LanguageContext } from '../GlobalContext'
+import { RootState } from '../Store'
+import { Language } from '../locales/Language'
+import { useSelector } from 'react-redux'
 type Photo = {
     uri?: string
     fileName?: string,
@@ -20,7 +23,7 @@ interface ProfilePictureProps {
 }
 
 export default function ProfilePicture({ uri, onImageChange }: ProfilePictureProps) {
-    let { language } = useContext(LanguageContext)
+    let language = useSelector<RootState,Language>(state => state.ui.language)
     const pickFromGallery = () => {
         launchImageLibrary({ mediaType: "photo" }, response => {
             if (!response.didCancel)

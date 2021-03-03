@@ -1,53 +1,38 @@
-import React, { useContext, useState } from 'react'
-import { StyleSheet, Text, View, TextInput, TouchableNativeFeedback, Alert, Button } from 'react-native'
-import axios from 'axios'
+import React, { useEffect, useState } from 'react'
+import { StyleSheet, Text, View, TextInput } from 'react-native'
 import Background from '../../assets/login.svg'
 import EmailIcon from '../../assets/email.svg'
 import PhoneIcon from '../../assets/phone.svg'
 import RippleButton from '../utils/RippleButton'
 import { StackNavigationProp } from '@react-navigation/stack'
-import { ProgressBarContext } from '../../App'
-import EncryptedStorage from 'react-native-encrypted-storage'
-import { CommonActions, StackActions } from '@react-navigation/native'
-import { LanguageContext } from '../GlobalContext'
-import { useDispatch } from 'react-redux'
-import { fetchProfileThunk } from '../profile/profileReducer'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from '../Store'
+import { Language } from '../locales/Language'
+import useLanguageSetup from '../utils/useLanguageSetup'
+import { loginAsyncThunk } from './AuthThunks'
 
 interface LoginProps {
     navigation: StackNavigationProp<any, any>
 }
-
 export default function Login({ navigation }: LoginProps) {
     let [email, setEmail] = useState("")
     let [phone, setPhone] = useState("")
     let [password, setPassword] = useState("")
-    let progressBarContext = useContext(ProgressBarContext)
-    let { language } = useContext(LanguageContext)
+    let language = useSelector<RootState, Language>(state => state.ui.language)
+    let token = useSelector<RootState, string>(state => state.auth.token)
     let dispatch = useDispatch()
-    const login = () => {
-        progressBarContext.setLoading(true)
-        axios.post("/login", { email, phone, password })
-            .then(result => {
-                EncryptedStorage.setItem("authToken", result.data.token)
-                    .then(() => {
-                        dispatch(fetchProfileThunk(result.data.token, progressBarContext.setLoading))
-                        navigation.reset({
-                            index: 0,
-                            routes: [
-                                { name: "Main" }
-                            ]
-                        })
-                        navigation.navigate("Main")
-                    })
+    useLanguageSetup()
+    const login = () => dispatch(loginAsyncThunk({ email, phone, password }))
+    useEffect(() => {
+        if (token) {
+            navigation.reset({
+                index: 0,
+                routes: [
+                    {name: "Main"}
+                ]
             })
-            .catch(err => {
-                Alert.alert("", err.response.data.message)
-            })
-            .finally(() => {
-                progressBarContext.setLoading(false)
-            })
-
-    }
+        }
+    }, [token])
     return (
         <View style={styles.container}>
             <Background

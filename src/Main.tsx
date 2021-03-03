@@ -4,17 +4,19 @@ import React, { useCallback, useContext, useEffect, useState } from 'react'
 import Home from './home/Home';
 import { Alert, StyleSheet, Text, View } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import { ProgressBarContext } from '../App';
+import { ProgressBarContext } from './App';
 import { DrawerContentComponentProps, DrawerContentOptions } from '@react-navigation/drawer/lib/typescript/src/types';
 import Profile from './profile/Profile';
-import { Profile as UserProfile } from './profile/profileReducer'
+import { ProfileState as UserProfile } from './profile/ProfileTypes'
 import useAuthToken from './utils/useAuthToken';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchProfileThunk } from './profile/profileReducer';
+import { fetchProfileAsyncThunk } from './profile/ProfileThunks';
 import FastImage from 'react-native-fast-image';
-import { LanguageContext } from './GlobalContext';
 import Settings from './settings/Settings';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
+import { RootState } from './Store';
+import { Language } from './locales/Language';
+import { logoutAsyncThunk } from './login/AuthThunks';
 
 const Drawer = createDrawerNavigator()
 
@@ -30,11 +32,11 @@ interface User {
     photoUrl?: string
 }
 export default function Main({ navigation }: MainProps) {
-    let { setLoading } = useContext(ProgressBarContext)
-    let [token, authError] = useAuthToken()
     let dispatch = useDispatch()
     let user: UserProfile = useSelector((state: any) => state.profile)
-    let { language } = useContext(LanguageContext)
+    let language = useSelector<RootState, Language>(state => state.ui.language)
+    let token = useSelector<RootState, string>(state => state.auth.token)
+    let authError = useSelector<RootState, string>(state => state.auth.error ?? "")
     const goToLogin = useCallback((message: string = language.notAuthenticated) => {
         Alert.alert("", message,
             [
@@ -54,15 +56,13 @@ export default function Main({ navigation }: MainProps) {
         })
     }, [language])
     const logout = () => {
-        EncryptedStorage.removeItem("authToken")
-            .then(() => {
-                navigation.reset({
-                    index: 0,
-                    routes: [
-                        { name: "Login" }
-                    ]
-                })
-            })
+        dispatch(logoutAsyncThunk())
+        navigation.reset({
+            index: 0,
+            routes: [
+                { name: "Login" }
+            ]
+        })
     }
     useEffect(() => {
         if (authError) {
@@ -72,7 +72,7 @@ export default function Main({ navigation }: MainProps) {
     useEffect(() => {
         if (!authError && token) {
             if (user && !user.loaded)
-                dispatch(fetchProfileThunk(token, setLoading))
+                dispatch(fetchProfileAsyncThunk(token))
         }
     }, [token, goToLogin, user])
     return (
@@ -88,14 +88,14 @@ export default function Main({ navigation }: MainProps) {
     )
 }
 function getDrawerContent(logout: () => void, { email, phone, name, photoUrl, }: User) {
-    let { language } = useContext(LanguageContext)
+    let language = useSelector<RootState, Language>(state => state.ui.language)
     return function DrawerContent(props: DrawerContentComponentProps<DrawerContentOptions>) {
         return (
             <DrawerContentScrollView>
                 <View>
                     {
                         photoUrl ? <FastImage source={{ cache: "web", priority: "normal", uri: photoUrl }} style={styles.photo} /> :
-                        <FontAwesomeIcon style={styles.placeholder} size={70} name="user-circle-o" color="#77777788" />
+                            <FontAwesomeIcon style={styles.placeholder} size={70} name="user-circle-o" color="#77777788" />
                     }
                     <View style={styles.profileData}>
                         <Text style={[styles.text, { fontSize: 20, color: "black" }]}>{name}</Text>

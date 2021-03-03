@@ -1,21 +1,27 @@
 import React, { useContext, useState } from 'react'
 import { StyleSheet, TouchableOpacity, TextInput, View } from 'react-native'
-import { useDispatch } from 'react-redux'
-import { ProgressBarContext } from '../../App'
+import { useDispatch, useSelector } from 'react-redux'
 import useAuthToken from '../utils/useAuthToken'
-import { fetchRestaurantsThunk } from './restaurantsReducer'
 import EvilIcon from 'react-native-vector-icons/EvilIcons'
 import { LanguageContext } from '../GlobalContext'
+import { fetchNextRestaurantPageThunk } from './RestaurantThunks'
+import { Language } from '../locales/Language'
+import { RootState } from '../Store'
 interface RestaurantSearchProps {
     loading: boolean,
     setLoading: (loading: boolean) => void
 }
-export default function RestaurantSearch({loading, setLoading}: RestaurantSearchProps) {
+export default function RestaurantSearch({ loading }: RestaurantSearchProps) {
     let dispatch = useDispatch()
     let [token, _] = useAuthToken()
     let [query, setQuery] = useState("")
-    const searchRestaurants = () => { if (!loading) dispatch(fetchRestaurantsThunk(token, setLoading, query)) }
-    let { language } = useContext(LanguageContext)
+    const searchRestaurants = () => {
+        if (!loading) {
+            console.log("RestaurantList: Dispatching query:" + query) 
+            dispatch(fetchNextRestaurantPageThunk({ token, pageSize: 20, q: query }))
+        }
+    }
+    let language = useSelector<RootState, Language>(state => state.ui.language)
     return (
         <View style={styles.container}>
             <TextInput
@@ -31,7 +37,6 @@ export default function RestaurantSearch({loading, setLoading}: RestaurantSearch
 const styles = StyleSheet.create({
     container: {
         flexDirection: "row",
-
     },
     button: {
         backgroundColor: "royalblue",
