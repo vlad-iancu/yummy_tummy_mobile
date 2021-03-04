@@ -1,16 +1,20 @@
 import React, { useContext, useEffect } from 'react'
 import { Alert, StyleSheet, View } from 'react-native'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import * as Progress from 'react-native-progress'
 import { RootState } from '../Store'
-export default function ProgressBarContainer(props: any) {
+import { UiActions } from '../UISlice'
+export default function UiEventContainer(props: any) {
     let loading = useSelector<RootState>(state => state.ui.loading)
-    let error: string = useSelector<RootState, string>(state => state.ui.error ?? "")
+    let {message, handled} = useSelector<RootState, {message: string, handled: boolean}>(
+        state => ({message: state.ui.message ?? "",handled: state.ui.handledMessage}))
+    let dispatch = useDispatch()
     useEffect(() => {
-        if (error) {
-            Alert.alert("", error)
+        if (message && !handled) {
+            Alert.alert("", message)
+            dispatch(UiActions.handleMessage(true))
         }
-    }, [error])
+    }, [message, handled])
     return (
         <View style={styles.container}>
             <View style={styles.container}>

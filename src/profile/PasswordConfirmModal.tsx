@@ -1,5 +1,8 @@
 import React, { useState } from 'react'
 import { Modal, View, Text, TextInput, StyleSheet } from 'react-native'
+import { useSelector } from 'react-redux'
+import { Language } from '../locales/Language'
+import { RootState } from '../Store'
 import RippleButton from '../utils/RippleButton'
 
 interface PasswordConfirmModalProps {
@@ -10,11 +13,12 @@ interface PasswordConfirmModalProps {
 
 export default function PasswordConfirmModal({ visible, onConfirm = () => {}, onCancel = () => {} }: PasswordConfirmModalProps) {
     let [password, setPassword] = useState("")
+    let language = useSelector<RootState, Language>(state => state.ui.language)
     return (
         <Modal visible={visible} transparent={true} animationType="fade">
             <View style={styles.container}>
                 <View style={styles.modal}>
-                    <Text>Re-enter your password:</Text>
+                    <Text>{language.reEnterYourPasswordMessage}</Text>
                     <TextInput style={styles.passwordEdit} secureTextEntry={true} selectionColor="#00000077" value={password} onChangeText={setPassword} />
                     <View style={styles.buttonContainer}>
                         <RippleButton duration={300} rippleColor="#DDDDDD" style={styles.button} onPress={() => {setPassword("");onCancel()}}>

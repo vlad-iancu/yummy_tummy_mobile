@@ -3,21 +3,19 @@ import axios from 'axios'
 import { RootState } from '../Store'
 import { RestaurantPageArgs, RestaurantsPayload } from './RestaurantTypes'
 import { UiActions } from '../UISlice'
-
+import Service from '../service/RestaurantService'
 const fetchNextRestaurantPageThunk = createAsyncThunk<
     RestaurantsPayload,
     RestaurantPageArgs,
     { state: RootState }
->("restaurants/fetch", async ({ token,pageSize,q }, thunkApi) => {
+>("restaurants/fetch", async ({ token, pageSize, q }, thunkApi) => {
+    const service = new Service(thunkApi.dispatch, thunkApi.getState)
     let { query } = thunkApi.getState().restaurants
     let page = thunkApi.getState().restaurants.nextPage
-    console.log("RestaurantThunk: query is " + query)
     if (q != null) page = 1
     else q = query
-    console.log(`Attempting to fetch page ${page} with q \"${q}\" and query ${query}`)
     thunkApi.dispatch(UiActions.loading(true))
-    const response = (await axios.get("/restaurants", { params: { q, pageSize, page }, headers: { Authorization: `Bearer ${token}` } })).data
-    thunkApi.dispatch(UiActions.loading(false))
+    const response = await service.fetchRestaurants({ q: q ?? "", pageSize, page })
     return { ...response, endReached: response.restaurants.length === 0, page, query: q }
 })
 

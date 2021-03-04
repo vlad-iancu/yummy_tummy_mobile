@@ -35,12 +35,6 @@ export default function Home({ navigation }: HomeProps) {
                 Alert.alert("", `${language.error}:${error}`)
     }, [error, authError])
 
-    const renderFooter = (props: any) => {
-        if (!loading) return null
-        return (
-            <Progress.CircleSnail color={["#4169e1"]} spinDuration={500} duration={2500} style={{ alignSelf: "center" }} />
-        )
-    }
     return (
         <View>
             <FlatList
@@ -53,7 +47,6 @@ export default function Home({ navigation }: HomeProps) {
                 }}
                 showsVerticalScrollIndicator={false}
                 keyExtractor={(restaurant) => restaurant.id.toString()}
-                ListFooterComponent={renderFooter}
                 onEndReachedThreshold={0.4}
                 onEndReached={() => { if (!loading && !endReached) dispatch(fetchNextRestaurantPageThunk({ token, pageSize: 20, q: null })) }} />
         </View>

@@ -1,33 +1,20 @@
-import axios from "axios";
-import { Dispatch } from "redux";
-import { RootState } from "../Store";
-import { UiActions } from "../UISlice";
-import { LoginRequest } from "./Request";
-import { LoginResponse } from "./Response";
+import { Dispatch } from "redux"
+import { RootState } from "../Store"
+import { UiActions } from "../UISlice"
 
-class Service {
-    private dispatch: Dispatch<any>
-    private getState: () => RootState
+export default class Service {
+    protected dispatch: Dispatch<any>
+    protected getState: () => RootState
     constructor(_dispatch: Dispatch<any>, _getState: () => RootState) {
         this.dispatch = _dispatch
         this.getState = _getState
     }
 
-    async executeRequest<Response>(block: () => Promise<Response>): Promise<Response> {
-        this.dispatch(UiActions.loading(true))
+    async executeRequest<Response>(block: () => Promise<Response>, loading: boolean = true): Promise<Response> {
+        if (loading) this.dispatch(UiActions.loading(true))
         return block()
             .finally(() => {
-                this.dispatch(UiActions.loading(false))
+                if (loading) this.dispatch(UiActions.loading(false))
             })
     }
-
-    async login(requestBody: LoginRequest): Promise<LoginResponse> {
-        let v = this.executeRequest(async () => {
-            let response: LoginResponse = (await axios.post("/login", requestBody)).data
-            return response
-        })
-        return v
-    }
 }
-
-export default Service

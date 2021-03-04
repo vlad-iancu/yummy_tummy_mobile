@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { loginAsyncThunk } from "./AuthThunks";
+import { loginAsyncThunk, logoutAsyncThunk } from "./AuthThunks";
 
 interface AuthState {
     token: string,
@@ -25,6 +25,9 @@ const authSilce = createSlice(
             })
             builder.addCase(loginAsyncThunk.rejected, (state, action) => {
                 state.error = action.error.message
+            })
+            builder.addCase(logoutAsyncThunk.fulfilled, (state, _) => {
+                state.token = ""
             })
         }
     }

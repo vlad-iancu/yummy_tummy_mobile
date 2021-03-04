@@ -8,7 +8,10 @@ import UserIcon from '../../assets/user.svg'
 import { StackNavigationProp } from '@react-navigation/stack'
 import RippleButton from '../utils/RippleButton';
 import { ProgressBarContext } from '../App';
-import { LanguageContext } from '../GlobalContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../Store';
+import { Language } from '../locales/Language';
+import { registerThunk } from './RegisterThunk';
 
 interface RegisterProps {
     navigation: StackNavigationProp<any, any>
@@ -18,24 +21,9 @@ export default function Register({ navigation }: RegisterProps) {
     let [name, setName] = useState("")
     let [phone, setPhone] = useState("")
     let [password, setPassword] = useState("")
-    let progressBarContext = useContext(ProgressBarContext)
-    let language = useSelector<RootState,Language>(state => state.language)
-    let register = () => {
-        progressBarContext.setLoading(true)
-        axios.post(`/register`, { email, name, phone, password })
-            .then(result => {
-                let text = ""
-                if (result.status == 200) text = language.registrationSuccessful
-                else text = result.data.message
-                Alert.alert("", text)
-            })
-            .catch(err => {
-                Alert.alert("", err.response.data.message)
-            })
-            .finally(() => {
-                progressBarContext.setLoading(false)
-            })
-    }
+    let dispatch = useDispatch()
+    let language = useSelector<RootState,Language>(state => state.ui.language)
+    let register = () => {dispatch(registerThunk({name,password,email,phone}))}
 
     return (
         <View style={styles.container}>

@@ -22,26 +22,25 @@ export default function Profile({ navigation }: ProfileProps) {
     let [modalVisible, setModalVisible] = useState(false)
     let [newName, setNewName] = useState<string>()
     let [newPhoto, setNewPhoto] = useState<Photo>()
-    let [token, error] = useAuthToken()
     let profile: UserProfile = useSelector((state: any) => state.profile)
     let language = useSelector<RootState,Language>(state => state.ui.language)
+    let token = useSelector<RootState,string>(state => state.auth.token)
+    let authError = useSelector<RootState,string>(state => state.auth.error ?? "")
+
     let dispatch = useDispatch()
     useEffect(() => {
-        if (!error && token) {
+        if (!authError && token) {
             if (!profile || !profile.loaded)
-                dispatch(fetchProfileAsyncThunk(token))
+                dispatch(fetchProfileAsyncThunk())
         }
         else {
-            Alert.prompt("", error)
+            Alert.prompt("", authError)
         }
-    }, [token, error, profile])
+    }, [token, authError, profile])
     useEffect(() => {
-        if (profile && !profile.error) {
+        if (profile) {
             navigation.setOptions({ headerTitle: profile.name, headerTitleAlign: "center" })
             setModalVisible(false)
-        }
-        else {
-            Alert.alert("", profile.error)
         }
     }, [profile])
     useEffect(() => {

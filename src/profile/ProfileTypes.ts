@@ -6,7 +6,6 @@ interface ProfileState {
     email?: string,
     phone?: string,
     photoUrl?: string,
-    error?: any,
     loaded: boolean,
 }
 
@@ -15,7 +14,6 @@ type ProfileUpdatePayload = {
     email?: string,
     phone?: string,
     photoUrl?: string,
-    error?: any
 }
 interface ProfileUpdate {
     newName?: string,

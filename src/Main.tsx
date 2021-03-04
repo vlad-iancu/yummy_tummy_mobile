@@ -57,12 +57,6 @@ export default function Main({ navigation }: MainProps) {
     }, [language])
     const logout = () => {
         dispatch(logoutAsyncThunk())
-        navigation.reset({
-            index: 0,
-            routes: [
-                { name: "Login" }
-            ]
-        })
     }
     useEffect(() => {
         if (authError) {
@@ -72,7 +66,15 @@ export default function Main({ navigation }: MainProps) {
     useEffect(() => {
         if (!authError && token) {
             if (user && !user.loaded)
-                dispatch(fetchProfileAsyncThunk(token))
+                dispatch(fetchProfileAsyncThunk())
+        }
+        else {
+            navigation.reset({
+                index: 0,
+                routes: [
+                    { name: "Login" }
+                ]
+            })
         }
     }, [token, goToLogin, user])
     return (
